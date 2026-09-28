@@ -5,7 +5,7 @@ import java.util.Map;
 
 /**
  * Herramienta para analizar el aporte individual de cada persona al repositorio.
- * Procesó la información de los commits de Git y genera estadísticas del trabajo
+ * Se rocesa la información de los commits de Git y genera estadísticas del trabajo
  * de cada integrante del equipo.
  */
 public class AnalizadorContribuciones {
@@ -44,4 +44,4 @@ public class AnalizadorContribuciones {
         }
     }
 }
-//Guillermo Muga
+//Guillermo Muga: Desarrollado mediante programación asistida por IA
