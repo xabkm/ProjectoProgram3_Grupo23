@@ -1,0 +1,16 @@
+# Archivos compilados de Java
+*.class
+/bin/
+
+# Archivos de configuración personal de Eclipse
+.settings/
+.classpath
+.project
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Evitar subir la base de datos de pruebas local (Opcional, según os pida el profesor)
+*.sqlite
+*.db
