@@ -13,7 +13,7 @@ public class UsuarioTableModel extends AbstractTableModel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String [] COLUMNAS = {"Animal_AD","Fecha_AD", "Personal_Cita"};
+	private static final String [] COLUMNAS = {"Animal_ID","Especie", "Fecha Acogida", "Estado"};
 	private Usuario usuario;
 	private List<Acogida> acogidas;
 	
@@ -38,8 +38,10 @@ public class UsuarioTableModel extends AbstractTableModel{
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		Acogida acogida = acogidas.get(rowIndex);
 		return switch (columnIndex) {
-		case 0 -> acogida.getClass();
-		
+		case 0 -> acogida.getId_a();
+		case 1 -> acogida.getEspecie();
+		case 2 -> acogida.getFecha_ac();
+		case 3 -> acogida.getEstado();
 		default -> null;
 		};
 	}
