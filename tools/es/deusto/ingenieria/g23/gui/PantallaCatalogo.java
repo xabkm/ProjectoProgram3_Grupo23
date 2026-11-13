@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 public class PantallaCatalogo extends JFrame {
 	private static final long serialVersionUID = 1L;
+	
 	public PantallaCatalogo() {
 		setTitle("Catálogo de Adopciones");
 		setSize(800, 500);
