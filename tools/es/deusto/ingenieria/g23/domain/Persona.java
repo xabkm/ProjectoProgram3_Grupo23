@@ -1,6 +1,7 @@
 package es.deusto.ingenieria.g23.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Persona implements Serializable {
@@ -10,6 +11,7 @@ public class Persona implements Serializable {
     private String nombre;
     private String email;
     private String telefono;
+    private ArrayList animales_adoptados;	//Lista de los animales que adopta cada uno
 
     public Persona() {
     }
