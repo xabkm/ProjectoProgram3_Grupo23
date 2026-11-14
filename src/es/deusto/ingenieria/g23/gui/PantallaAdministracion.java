@@ -16,9 +16,11 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.EstadoAnimal;
-
 import es.deusto.ingenieria.g23.domain.Administrador;
 import es.deusto.ingenieria.g23.domain.Persona;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 
 public class PantallaAdministracion extends JFrame {
 
@@ -73,20 +75,123 @@ public class PantallaAdministracion extends JFrame {
 	    panelBotones.add(btnEditar);
 	    panelBotones.add(btnEliminar);
 	    panel.add(panelBotones, BorderLayout.SOUTH);
-
+	 // Conectamos los eventos de los botones del CRUD
+	 		btnNuevo.addActionListener(e -> nuevoAnimal());
+	 		btnEditar.addActionListener(e -> editarAnimal());
+	 		btnEliminar.addActionListener(e -> eliminarAnimal());
 	    return panel;
 	}
+	//  formulario con JOptionPane para dar de alta un nuevo animal
+		private void nuevoAnimal() {
+			JTextField txtId = new JTextField();
+			JTextField txtNombre = new JTextField();
+			JTextField txtEspecie = new JTextField();
+			JTextField txtRaza = new JTextField();
+			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 
+			JComponent[] campos = new JComponent[] {
+				new JLabel("ID del Animal:"), txtId,
+				new JLabel("Nombre:"), txtNombre,
+				new JLabel("Especie:"), txtEspecie,
+				new JLabel("Raza:"), txtRaza,
+				new JLabel("Estado:"), comboEstado
+			};
+
+			int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+			if (opcion == JOptionPane.OK_OPTION) {
+				if (txtId.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios.", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
+				Animal nuevo = new Animal(
+					txtId.getText().trim(),
+					txtNombre.getText().trim(),
+					txtEspecie.getText().trim(),
+					txtRaza.getText().trim(),
+					LocalDate.now(),
+					estadoSeleccionado
+				);
+
+				listaAnimales.add(nuevo);
+				modeloAnimales.fireTableDataChanged();
+			}
+		}
+
+		// Permite modificar los datos del animal seleccionado en la tabla
+		private void editarAnimal() {
+			int fila = tablaAnimales.getSelectedRow();
+			if (fila == -1) {
+				JOptionPane.showMessageDialog(this, "Selecciona primero un animal de la tabla para editarlo", "Aviso", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			Animal seleccionado = listaAnimales.get(fila);
+
+			JTextField txtNombre = new JTextField(seleccionado.getNombre());
+			JTextField txtEspecie = new JTextField(seleccionado.getEspecie());
+			JTextField txtRaza = new JTextField(seleccionado.getRaza());
+			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
+			comboEstado.setSelectedItem(seleccionado.getEstado());
+
+			JComponent[] campos = new JComponent[] {
+				new JLabel("Nombre:"), txtNombre,
+				new JLabel("Especie:"), txtEspecie,
+				new JLabel("Raza:"), txtRaza,
+				new JLabel("Estado:"), comboEstado
+			};
+
+			int opcion = JOptionPane.showConfirmDialog(this, campos, "Editar Animal (" + seleccionado.getId() + ")", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+			if (opcion == JOptionPane.OK_OPTION) {
+				if (txtNombre.getText().trim().isEmpty()) {
+					JOptionPane.showMessageDialog(this, "El nombre no puede quedar vacío", "Error de validación", JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+
+				seleccionado.setNombre(txtNombre.getText().trim());
+				seleccionado.setEspecie(txtEspecie.getText().trim());
+				seleccionado.setRaza(txtRaza.getText().trim());
+				seleccionado.setEstado((EstadoAnimal) comboEstado.getSelectedItem());
+
+				modeloAnimales.fireTableDataChanged();
+			}
+		}
+
+		// Elimina el animal seleccionado con previa confirmación
+		private void eliminarAnimal() {
+			int fila = tablaAnimales.getSelectedRow();
+			if (fila == -1) {
+				JOptionPane.showMessageDialog(this, "Selecciona primero el animal que quieres eliminar", "Aviso", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			Animal seleccionado = listaAnimales.get(fila);
+			int confirmacion = JOptionPane.showConfirmDialog(
+				this,
+				"¿Seguro que quieres eliminar a " + seleccionado.getNombre() + " (" + seleccionado.getId() + ")?",
+				"Confirmar borrado",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+
+			if (confirmacion == JOptionPane.YES_OPTION) {
+				listaAnimales.remove(fila);
+				modeloAnimales.fireTableDataChanged();
+			}
+		}
 	// hacer luego
 	private JPanel crearPanelAdopciones() {
 	    JPanel panel = new JPanel(new BorderLayout());
-	    panel.add(new JLabel("Historial de Solicitudes de Adopción", SwingConstants.CENTER), BorderLayout.CENTER);
+	    panel.add(new JLabel("Historial de solicitudes de adopción", SwingConstants.CENTER), BorderLayout.CENTER);
 	    return panel;
 	}
 	// hacer luego
 	private JPanel crearPanelAgenda() {
 	    JPanel panel = new JPanel(new BorderLayout());
-	    panel.add(new JLabel("Agenda de Citas de la Fundación", SwingConstants.CENTER), BorderLayout.CENTER);
+	    panel.add(new JLabel("Agenda de citas de la Fundación", SwingConstants.CENTER), BorderLayout.CENTER);
 	    return panel;
 	}
 
