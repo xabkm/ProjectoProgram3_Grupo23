@@ -1,6 +1,8 @@
 package es.deusto.ingenieria.g23.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -13,8 +15,13 @@ public class Animal implements Serializable {
     private String raza;
     private LocalDate fechaNacimiento;
     private EstadoAnimal estado;
+    private String descripcion;
+    private boolean vacunado;
+    private boolean esterilizado;
+    private List<String> rutasFotos;
 
     public Animal() {
+    	this.rutasFotos = new ArrayList<>();
     }
 
     public Animal(String id, String nombre, String especie, String raza, LocalDate fechaNacimiento, EstadoAnimal estado) {
@@ -24,8 +31,24 @@ public class Animal implements Serializable {
         this.raza = raza;
         this.fechaNacimiento = fechaNacimiento;
         this.estado = estado;
+        this.descripcion = "Sin descripción disponible.";
+        this.vacunado = false;
+        this.esterilizado = false;
+        this.rutasFotos = new ArrayList<>();
     }
-
+    
+    public Animal(String id, String nombre, String especie, String raza, LocalDate fechaNacimiento,
+    		              EstadoAnimal estado, String descripcion, boolean vacunado, boolean esterilizado,
+    		              List<String> rutasFotos) {
+    		    this(id, nombre, especie, raza, fechaNacimiento, estado);
+    		    this.descripcion = descripcion;
+    		    this.vacunado = vacunado;
+    		    this.esterilizado = esterilizado;
+    	     if (rutasFotos != null) {
+   	          this.rutasFotos = rutasFotos;
+  		      }
+    	    }
+    
     // Getters y Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -44,6 +67,19 @@ public class Animal implements Serializable {
 
     public EstadoAnimal getEstado() { return estado; }
     public void setEstado(EstadoAnimal estado) { this.estado = estado; }
+    
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    
+    public boolean isVacunado() { return vacunado; }
+    public void setVacunado(boolean vacunado) { this.vacunado = vacunado; }
+    
+    public boolean isEsterilizado() { return esterilizado; }
+    public void setEsterilizado(boolean esterilizado) { this.esterilizado = esterilizado; }
+    
+    public List<String> getRutasFotos() { return rutasFotos; }
+    public void setRutasFotos(List<String> rutasFotos) { this.rutasFotos = rutasFotos; }
+    
 
     // Método para calcular la edad aproximada
     public int getEdadAnios() {
