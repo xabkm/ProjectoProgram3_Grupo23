@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.Objects;
 
 public class Animal implements Serializable {
@@ -84,9 +85,44 @@ public class Animal implements Serializable {
     // Método para calcular la edad aproximada
     public int getEdadAnios() {
         if (fechaNacimiento == null) return 0;
-        return LocalDate.now().getYear() - fechaNacimiento.getYear();
+        LocalDate hoy = LocalDate.now();
+    	Period periodo = Period.between(fechaNacimiento, hoy);
+    	if(periodo.getYears() < 0) {
+    		return 0;
+    	}
+        return periodo.getYears();
     }
+    
+    // metodo generado por IA para calcular la edad exacta
+    public String getEdadTexto() {
+    	if (fechaNacimiento == null) {
+    		return "Edad desconocida";
+    	}
+    	LocalDate hoy = LocalDate.now();
+    	Period periodo = Period.between(fechaNacimiento, hoy);
+    	if (periodo.isNegative()) {
+    		return "Edad desconocida";
+    	}
 
+    	int anios = periodo.getYears();
+    	int meses = periodo.getMonths();
+
+    	if (anios > 0) {
+    		if (anios == 1) {
+    			return "1 año";
+    		} else {
+    			return anios + " años";
+    		}
+    	} else if (meses > 0) {
+    		if (meses == 1) {
+    			return "1 mes";
+    		} else {
+    			return meses + " meses";
+    		}
+    	} else {
+    		return "Menos de 1 mes";
+    	}
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

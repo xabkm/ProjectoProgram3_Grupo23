@@ -12,14 +12,15 @@ public class Persona implements Serializable {
     private String apellidos;
     private String email;
     private String telefono;
-    private ArrayList animales_adoptados;	//Lista de los animales que adopta cada uno
+    private ArrayList<Animal> animales_adoptados = new ArrayList<>();	//Lista de los animales que adopta cada uno (inicializada para que no de null)
 
     public Persona() {
     }
 
-    public Persona(String dni, String nombre, String email, String telefono) {
+    public Persona(String dni, String nombre, String apellidos, String email, String telefono) {
         this.dni = dni;
         this.nombre = nombre;
+        this.apellidos = apellidos;
         this.email = email;
         this.telefono = telefono;
     }
@@ -42,6 +43,13 @@ public class Persona implements Serializable {
 
 	public ArrayList getAnimales_adoptados() {return animales_adoptados;}
 	public void setAnimales_adoptados(ArrayList animales_adoptados) {this.animales_adoptados = animales_adoptados;
+	}
+	
+	public String getNombreCompleto() {
+		if (apellidos == null) {
+			return apellidos;
+		}
+		return nombre + " " +apellidos;
 	}
     
     @Override

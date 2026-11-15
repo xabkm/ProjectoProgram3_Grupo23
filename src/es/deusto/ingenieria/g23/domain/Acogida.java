@@ -28,7 +28,7 @@ public class Acogida {
 
 	@Override
 	public String toString() {
-		return "ID=" + id_a + ", especie=" + especie + ", fecha_ac=" + fecha_ac + ", estado=" + estado + "]";
+		 return "Acogida [ID=" + id_a + ", especie=" + especie + ", fecha_ac=" + fecha_ac + ", estado=" + estado + "]"; // correcion hecha por la IA
 	}
 
 	
