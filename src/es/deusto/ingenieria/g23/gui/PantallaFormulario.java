@@ -2,10 +2,9 @@ package es.deusto.ingenieria.g23.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.time.LocalDateTime;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,7 +14,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
 import es.deusto.ingenieria.g23.domain.Persona;
+import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
 
 public class PantallaFormulario extends JFrame{
 
@@ -40,16 +41,14 @@ public class PantallaFormulario extends JFrame{
 		
 		// Añadimos los datos que pedimos
 		JTextField campoNombre = new JTextField(20);
-		JTextField campoApellido1 = new JTextField(20);
-		JTextField campoApellido2 = new JTextField(20);
+		JTextField campoApellidos = new JTextField(20);
 		JTextField campoDni = new JTextField(20);
 		JTextField campoEmail = new JTextField(20);
 		JTextField campoTlf = new JTextField(20);
 
 		// Añadimos los 4 campos obligatorios de la Pantalla 4 fila por fila
 		pnlFormulario.add(crearFila("Nombre:", campoNombre));
-		pnlFormulario.add(crearFila("Primer Apellido:", campoApellido1));
-		pnlFormulario.add(crearFila("Segundo Apellido:", campoApellido2));
+		pnlFormulario.add(crearFila("Apellidos:", campoApellidos));
 		pnlFormulario.add(crearFila("DNI:", campoDni));
 		pnlFormulario.add(crearFila("Email:", campoEmail));
 		pnlFormulario.add(crearFila("Telefono:", campoTlf));
@@ -62,14 +61,20 @@ public class PantallaFormulario extends JFrame{
 		// Cuando pulsemos el boton tiene que guardar la informacion
 		// Crea una nueva persona y solicitud de adopcion con ella
 		finalizar.addMouseListener(new MouseAdapter() {			
-			public void mouseClicked(MouseEvent e) {
-				JOptionPane.showConfirmDialog(null, "Desea salir?", "Confirmar", JOptionPane.YES_NO_OPTION);
-				
+			public void mouseClicked(MouseEvent e) {				
 				Persona persona = new Persona();
 				persona.setNombre(campoNombre.getText());
+				persona.setApellidos(campoApellidos.getText());
+				persona.setDni(campoDni.getText());
+				persona.setEmail(campoEmail.getText());
+				persona.setTelefono(campoTlf.getText());
+				
+				SolicitudAdopcion solicitud = new SolicitudAdopcion();
+				solicitud.setSolicitante(persona);
+				solicitud.setFechaSolicitud(LocalDateTime.now());
+				solicitud.setEstado(EstadoSolicitud.PENDIENTE);
 				
 			}
-		
 		});
 		
 		
