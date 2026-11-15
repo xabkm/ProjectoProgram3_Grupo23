@@ -225,8 +225,8 @@ public class PantallaDetalleAnimal extends JFrame {
     // Main para probar la ventana
     public static void main(String[] args) {
         List<String> fotosPrueba = new ArrayList<>();
-        fotosPrueba.add("resources/imgages/max1.png");
-        fotosPrueba.add("resources/imgages/max2.png");
+        fotosPrueba.add("resources/images/max1.png");
+        fotosPrueba.add("resources/images/max2.png");
 
         Animal perroPrueba = new Animal(
                 "A01",
