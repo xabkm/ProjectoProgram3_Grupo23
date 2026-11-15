@@ -15,6 +15,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import es.deusto.ingenieria.g23.domain.Animal;
+import es.deusto.ingenieria.g23.domain.Especie;
 import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 import es.deusto.ingenieria.g23.domain.Administrador;
 import es.deusto.ingenieria.g23.domain.Persona;
@@ -154,14 +155,14 @@ public class PantallaAdministracion extends JFrame {
 		private void nuevoAnimal() {
 			JTextField txtId = new JTextField();
 			JTextField txtNombre = new JTextField();
-			JTextField txtEspecie = new JTextField();
+			JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
 			JTextField txtRaza = new JTextField();
 			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 
 			JComponent[] campos = new JComponent[] {
 				new JLabel("ID del Animal:"), txtId,
 				new JLabel("Nombre:"), txtNombre,
-				new JLabel("Especie:"), txtEspecie,
+				new JLabel("Especie:"), comboEspecie,
 				new JLabel("Raza:"), txtRaza,
 				new JLabel("Estado:"), comboEstado
 			};
@@ -173,12 +174,14 @@ public class PantallaAdministracion extends JFrame {
 					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-
+				
+				
+				Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
 				EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
 				Animal nuevo = new Animal(
 					txtId.getText().trim(),
 					txtNombre.getText().trim(),
-					txtEspecie.getText().trim(),
+					especieSeleccionada,
 					txtRaza.getText().trim(),
 					LocalDate.now(),
 					estadoSeleccionado
@@ -200,14 +203,14 @@ public class PantallaAdministracion extends JFrame {
 			Animal seleccionado = listaAnimales.get(fila);
 
 			JTextField txtNombre = new JTextField(seleccionado.getNombre());
-			JTextField txtEspecie = new JTextField(seleccionado.getEspecie());
+			JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
 			JTextField txtRaza = new JTextField(seleccionado.getRaza());
 			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 			comboEstado.setSelectedItem(seleccionado.getEstado());
 
 			JComponent[] campos = new JComponent[] {
 				new JLabel("Nombre:"), txtNombre,
-				new JLabel("Especie:"), txtEspecie,
+				new JLabel("Especie:"), comboEspecie,
 				new JLabel("Raza:"), txtRaza,
 				new JLabel("Estado:"), comboEstado
 			};
@@ -221,7 +224,7 @@ public class PantallaAdministracion extends JFrame {
 				}
 
 				seleccionado.setNombre(txtNombre.getText().trim());
-				seleccionado.setEspecie(txtEspecie.getText().trim());
+				seleccionado.setEspecie((Especie) comboEspecie.getSelectedItem());
 				seleccionado.setRaza(txtRaza.getText().trim());
 				seleccionado.setEstado((EstadoAnimal) comboEstado.getSelectedItem());
 
@@ -269,10 +272,10 @@ public class PantallaAdministracion extends JFrame {
 	private List<Animal> cargarAnimalesPrueba() {
 	    List<Animal> mocks = new ArrayList<>();
 
-	    mocks.add(new Animal("A001", "Toby", "Perro", "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
-	    mocks.add(new Animal("A002", "Luna", "Gato", "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
-	    mocks.add(new Animal("A003", "Max", "Perro", "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO));
-	    mocks.add(new Animal("A003", "Pablo", "Perro", "Chihuahua", LocalDate.of(2011, 12, 15), EstadoAnimal.ADOPTADO));
+	    mocks.add(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
+	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
+	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO));
+	    mocks.add(new Animal("A004", "Pablo", Especie.PERRO, "Chihuahua", LocalDate.of(2011, 12, 15), EstadoAnimal.ADOPTADO));
 
 	    return mocks;
 	}
