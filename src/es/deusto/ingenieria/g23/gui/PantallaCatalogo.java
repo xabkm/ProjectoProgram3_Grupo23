@@ -118,7 +118,7 @@ public class PantallaCatalogo extends JFrame {
 		pControles.setBackground(Color.WHITE);
 		pControles.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
 		
-		JLabel lblEspecies = new JLabel("Especies (marca varias):");
+		JLabel lblEspecies = new JLabel("Especies :");
 		lblEspecies.setFont(new Font("SansSerif", Font.BOLD, 12));
 		pControles.add(lblEspecies);
 
