@@ -3,12 +3,14 @@ package es.deusto.ingenieria.g23.gui;
 import java.util.List;
 import javax.swing.table.AbstractTableModel;
 import es.deusto.ingenieria.g23.domain.CitaAgenda;
+import java.time.format.DateTimeFormatter;
 //IAG  GitHub Copilot
 //ADAPTADO: Generación de la estructura repetitiva del AbstractTableModel tomando como referencia SolicitudTableModel y ajustando los getters de CitaAgenda
 public class CitaTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
 	private final String[] columnas = { "ID", "Fecha y Hora", "Tipo", "Animal", "Persona Asignada" };
+	private final DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private List<CitaAgenda> citas;
 
 	public CitaTableModel(List<CitaAgenda> citas) {
@@ -37,7 +39,11 @@ public class CitaTableModel extends AbstractTableModel {
 		case 0:
 			return c.getId();
 		case 1:
-			return c.getFechaHora();
+			if (c.getFechaHora() != null) {
+				return c.getFechaHora().format(formatoFecha);
+			} else {
+				return "Sin fecha";
+			}
 		case 2:
 			return c.getTipoCita();
 		case 3:

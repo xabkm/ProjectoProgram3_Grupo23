@@ -25,13 +25,18 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.BorderFactory;
 import javax.swing.table.DefaultTableCellRenderer;
-
-
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
+import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
+import es.deusto.ingenieria.g23.domain.Usuario;
 
 public class PantallaAdministracion extends JFrame {
 
@@ -40,6 +45,9 @@ public class PantallaAdministracion extends JFrame {
 	private List<Animal> listaAnimales;
 	private AnimalTableModel modeloAnimales;
 	private JTable tablaAnimales;
+	private List<SolicitudAdopcion> listaSolicitudes;
+	private SolicitudTableModel modeloSolicitudes;
+	private JTable tablaSolicitudes;
 
 	public PantallaAdministracion(Persona usuario) {
 		
@@ -53,24 +61,40 @@ public class PantallaAdministracion extends JFrame {
 
 		this.adminActual = usuario;
 		this.listaAnimales = cargarAnimalesPrueba();
+		this.listaSolicitudes = cargarSolicitudesPrueba();
 
 		setTitle("Panel de Administración - Usuario: " + adminActual.getNombre());
 		setSize(950, 650);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLayout(new BorderLayout());
+		setLayout(new BorderLayout(10, 10));
+
+		JPanel panelNorte = new JPanel(new BorderLayout());
+		panelNorte.setBackground(new Color(45, 106, 79));
+		panelNorte.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+		JLabel lblTitulo = new JLabel("PANEL DE ADMINISTRACION", SwingConstants.CENTER);
+		lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
+		lblTitulo.setForeground(Color.WHITE);
+		panelNorte.add(lblTitulo, BorderLayout.CENTER);
 
 		JTabbedPane pestanas = new JTabbedPane();
 		pestanas.addTab("Gestión de Animales", crearPanelAnimales());
 		pestanas.addTab("Solicitudes de Adopción", crearPanelAdopciones());
 		pestanas.addTab("Agenda de Citas", crearPanelAgenda());
 
-		add(pestanas, BorderLayout.CENTER);
+		JPanel panelCentro = new JPanel(new BorderLayout());
+		panelCentro.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+		panelCentro.add(pestanas, BorderLayout.CENTER);
+
+		add(panelNorte, BorderLayout.NORTH);
+		add(panelCentro, BorderLayout.CENTER);
 	}
 	
 	
 	private JPanel crearPanelAnimales() {
-	    JPanel panel = new JPanel(new BorderLayout());
+	    JPanel panel = new JPanel(new BorderLayout(5, 10));
+	    panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 	    modeloAnimales = new AnimalTableModel(listaAnimales);
 	    tablaAnimales = new JTable(modeloAnimales);
@@ -134,12 +158,16 @@ public class PantallaAdministracion extends JFrame {
 	    
 	    
 	    JScrollPane scrollTabla = new JScrollPane(tablaAnimales);
-	    panel.add(scrollTabla, BorderLayout.CENTER);
+	    JPanel panelTabla = new JPanel(new BorderLayout());
+	    panelTabla.setBorder(BorderFactory.createTitledBorder("Animales"));
+	    panelTabla.add(scrollTabla, BorderLayout.CENTER);
+	    panel.add(panelTabla, BorderLayout.CENTER);
 
-	    JPanel panelBotones = new JPanel(new FlowLayout());
+	    JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	    JButton btnNuevo = new JButton("Nuevo Animal");
 	    JButton btnEditar = new JButton("Editar");
 	    JButton btnEliminar = new JButton("Eliminar");
+	    btnNuevo.setFont(new Font("Arial", Font.BOLD, 14));
 
 	    panelBotones.add(btnNuevo);
 	    panelBotones.add(btnEditar);
@@ -254,15 +282,148 @@ public class PantallaAdministracion extends JFrame {
 				modeloAnimales.fireTableDataChanged();
 			}
 		}
-	// hacer luego
-	private JPanel crearPanelAdopciones() {
-	    JPanel panel = new JPanel(new BorderLayout());
-	    panel.add(new JLabel("Historial de solicitudes de adopción", SwingConstants.CENTER), BorderLayout.CENTER);
-	    return panel;
-	}
+		
+		
+		
+		
+		
+		private JPanel crearPanelAdopciones() {
+			JPanel panel = new JPanel(new BorderLayout(5, 10));
+			panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+			modeloSolicitudes = new SolicitudTableModel(listaSolicitudes);
+			tablaSolicitudes = new JTable(modeloSolicitudes);
+
+			tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			tablaSolicitudes.setRowHeight(24);
+			tablaSolicitudes.getColumnModel().getColumn(0).setPreferredWidth(60);
+
+			// Renderizado personalizado para la columna Estado (columna 4)
+			tablaSolicitudes.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+						boolean hasFocus, int row, int column) {
+					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+					if (isSelected) {
+						c.setBackground(table.getSelectionBackground());
+						c.setForeground(table.getSelectionForeground());
+					} else if (value instanceof EstadoSolicitud) {
+						c.setForeground(Color.BLACK);
+						String estadoTexto = value.toString().toUpperCase();
+						if (estadoTexto.contains("APROB") || estadoTexto.contains("ACEPT")) {
+							c.setBackground(new Color(215, 245, 220)); // Verde claro
+						} else if (estadoTexto.contains("RECHAZ") || estadoTexto.contains("DENEG")) {
+							c.setBackground(new Color(255, 215, 215)); // Rojo claro
+						} else {
+							c.setBackground(new Color(255, 248, 200)); // Amarillo claro 
+						}
+					}
+					return c;
+				}
+			});
+
+			// Doble clic en una fila para revisar y cambiar el estado de la solicitud
+			tablaSolicitudes.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					if (e.getClickCount() == 2) {
+						gestionarSolicitud();
+					}
+				}
+			});
+
+			JScrollPane scrollTabla = new JScrollPane(tablaSolicitudes);
+			JPanel panelTabla = new JPanel(new BorderLayout());
+			panelTabla.setBorder(BorderFactory.createTitledBorder("Solicitudes"));
+			panelTabla.add(scrollTabla, BorderLayout.CENTER);
+			panel.add(panelTabla, BorderLayout.CENTER);
+
+			JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+			JButton btnGestionar = new JButton("Gestionar Estado");
+			JButton btnEliminarSol = new JButton("Eliminar");
+			btnGestionar.setFont(new Font("Arial", Font.BOLD, 14));
+
+			panelBotones.add(btnGestionar);
+			panelBotones.add(btnEliminarSol);
+			panel.add(panelBotones, BorderLayout.SOUTH);
+
+			btnGestionar.addActionListener(e -> gestionarSolicitud());
+			btnEliminarSol.addActionListener(e -> eliminarSolicitud());
+
+			return panel;
+		}
+
+		// Abre un diálogo para aprobar, rechazar o cambiar el estado de la solicitud seleccionada
+		private void gestionarSolicitud() {
+			int fila = tablaSolicitudes.getSelectedRow();
+			if (fila == -1) {
+				JOptionPane.showMessageDialog(this, "Selecciona primero una solicitud de la tabla", "Aviso", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			SolicitudAdopcion seleccionada = listaSolicitudes.get(fila);
+			String nombreAnimal = (seleccionada.getAnimal() != null) ? seleccionada.getAnimal().getNombre() : "Sin asignar";
+			String nombreSolicitante = (seleccionada.getSolicitante() != null) ? seleccionada.getSolicitante().getNombre() : "Sin asignar";
+			String fechaFormateada = (seleccionada.getFechaSolicitud() != null) 
+					? seleccionada.getFechaSolicitud().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")) 
+					: "Sin fecha";
+
+			JComboBox<EstadoSolicitud> comboEstado = new JComboBox<>(EstadoSolicitud.values());
+			comboEstado.setSelectedItem(seleccionada.getEstado());
+
+			JComponent[] campos = new JComponent[] {
+				new JLabel("Solicitud: " + seleccionada.getId()),
+				new JLabel("Solicitante: " + nombreSolicitante),
+				new JLabel("Animal solicitado: " + nombreAnimal),
+				new JLabel("Fecha de registro: " + fechaFormateada),
+				new JLabel("Nuevo estado:"), comboEstado
+			};
+
+			int opcion = JOptionPane.showConfirmDialog(this, campos, "Gestionar Solicitud (" + seleccionada.getId() + ")",
+					JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+			if (opcion == JOptionPane.OK_OPTION) {
+				seleccionada.setEstado((EstadoSolicitud) comboEstado.getSelectedItem());
+				modeloSolicitudes.fireTableDataChanged();
+			}
+		}
+
+		// Elimina la solicitud seleccionada tras pedir confirmación
+		private void eliminarSolicitud() {
+			int fila = tablaSolicitudes.getSelectedRow();
+			if (fila == -1) {
+				JOptionPane.showMessageDialog(this, "Selecciona primero la solicitud que quieres eliminar", "Aviso", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+
+			SolicitudAdopcion seleccionada = listaSolicitudes.get(fila);
+			int confirmacion = JOptionPane.showConfirmDialog(
+				this,
+				"¿Seguro que quieres eliminar la solicitud " + seleccionada.getId() + "?",
+				"Confirmar borrado",
+				JOptionPane.YES_NO_OPTION,
+				JOptionPane.QUESTION_MESSAGE
+			);
+
+			if (confirmacion == JOptionPane.YES_OPTION) {
+				listaSolicitudes.remove(fila);
+				modeloSolicitudes.fireTableDataChanged();
+			}
+		}
+		
+		
+		
+		
+		
+		
+		
 	// hacer luego
 	private JPanel crearPanelAgenda() {
 	    JPanel panel = new JPanel(new BorderLayout());
+	    panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 	    panel.add(new JLabel("Agenda de citas de la Fundación", SwingConstants.CENTER), BorderLayout.CENTER);
 	    return panel;
 	}
@@ -278,6 +439,22 @@ public class PantallaAdministracion extends JFrame {
 	    mocks.add(new Animal("A004", "Pablo", Especie.PERRO, "Chihuahua", LocalDate.of(2011, 12, 15), EstadoAnimal.ADOPTADO));
 
 	    return mocks;
+	}
+	// Lista temporal de solicitudes de adopción
+	private List<SolicitudAdopcion> cargarSolicitudesPrueba() {
+		List<SolicitudAdopcion> mocks = new ArrayList<>();
+
+		Usuario u1 = new Usuario();
+		u1.setNombre("Laura Martínez");
+
+		Usuario u2 = new Usuario();
+		u2.setNombre("Carlos Gómez");
+
+		mocks.add(new SolicitudAdopcion("S001", listaAnimales.get(0), u1, LocalDateTime.now().minusDays(2), EstadoSolicitud.PENDIENTE));
+		mocks.add(new SolicitudAdopcion("S002", listaAnimales.get(1), u2, LocalDateTime.now().minusDays(1), EstadoSolicitud.APROBADA));
+		mocks.add(new SolicitudAdopcion("S003", listaAnimales.get(2), u1, LocalDateTime.now().minusHours(5), EstadoSolicitud.RECHAZADA));
+
+		return mocks;
 	}
 	
 	// metodo para ver la ventana desde aqui
