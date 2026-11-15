@@ -21,6 +21,16 @@ import es.deusto.ingenieria.g23.domain.Persona;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.table.DefaultTableCellRenderer;
+
+
 
 public class PantallaAdministracion extends JFrame {
 
@@ -44,7 +54,7 @@ public class PantallaAdministracion extends JFrame {
 		this.listaAnimales = cargarAnimalesPrueba();
 
 		setTitle("Panel de Administración - Usuario: " + adminActual.getNombre());
-		setSize(900, 600);
+		setSize(950, 650);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLayout(new BorderLayout());
@@ -63,12 +73,71 @@ public class PantallaAdministracion extends JFrame {
 
 	    modeloAnimales = new AnimalTableModel(listaAnimales);
 	    tablaAnimales = new JTable(modeloAnimales);
+	    
+	    
+	    
+	 // Solo dejamos seleccionar una fila a la vez y ajustamos un poco el aspecto
+	 		tablaAnimales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	 		tablaAnimales.setRowHeight(24);
+	 		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55);
+
+	 		// Renderizado personalizado para la columna de Estado (colores según disponibilidad)
+	 		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+				private static final long serialVersionUID = 1L;
+
+				@Override
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+						boolean hasFocus, int row, int column) {
+					Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+					if (isSelected) {
+						c.setBackground(table.getSelectionBackground());
+						c.setForeground(table.getSelectionForeground());
+					} else if (value instanceof EstadoAnimal) {
+						c.setForeground(Color.BLACK);
+						EstadoAnimal estado = (EstadoAnimal) value;
+						// IAG Gemini
+						// creado los colores
+						if (estado == EstadoAnimal.DISPONIBLE) {
+							c.setBackground(new Color(215, 245, 220)); // verde claro
+						} else if (estado == EstadoAnimal.ADOPTADO) {
+							c.setBackground(new Color(255, 215, 215)); // Rojo claro
+						} else {
+							c.setBackground(new Color(255, 248, 200)); // Amarillo claro 
+						}
+					}
+					return c;
+				}
+			});
+
+	 		// Doble clic en una fila para abrir directamente la ventana de editar
+	 		tablaAnimales.addMouseListener(new MouseAdapter() {
+	 			@Override
+	 			public void mouseClicked(MouseEvent e) {
+	 				if (e.getClickCount() == 2 ) {
+	 					editarAnimal();
+	 				}
+	 			}
+	 		});
+
+	 		// Tecla supr para borrar el animal seleccionado
+	 		tablaAnimales.addKeyListener(new KeyAdapter() {
+	 			@Override
+	 			public void keyPressed(KeyEvent e) {
+	 				if (e.getKeyCode() == KeyEvent.VK_DELETE ) {
+	 					eliminarAnimal();
+	 				}
+	 			}
+	 		});
+	    
+	    
+	    
 	    JScrollPane scrollTabla = new JScrollPane(tablaAnimales);
 	    panel.add(scrollTabla, BorderLayout.CENTER);
 
 	    JPanel panelBotones = new JPanel(new FlowLayout());
 	    JButton btnNuevo = new JButton("Nuevo Animal");
-	    JButton btnEditar = new JButton("Editar Seleccionado");
+	    JButton btnEditar = new JButton("Editar");
 	    JButton btnEliminar = new JButton("Eliminar");
 
 	    panelBotones.add(btnNuevo);
@@ -101,7 +170,7 @@ public class PantallaAdministracion extends JFrame {
 
 			if (opcion == JOptionPane.OK_OPTION) {
 				if (txtId.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
-					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios.", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 
@@ -120,7 +189,7 @@ public class PantallaAdministracion extends JFrame {
 			}
 		}
 
-		// Permite modificar los datos del animal seleccionado en la tabla
+		//  modificar los datos del animal seleccionado en la tabla
 		private void editarAnimal() {
 			int fila = tablaAnimales.getSelectedRow();
 			if (fila == -1) {
@@ -196,14 +265,14 @@ public class PantallaAdministracion extends JFrame {
 	}
 
 	
-	// lista temporal de animaels
+	// lista temporal de animales
 	private List<Animal> cargarAnimalesPrueba() {
 	    List<Animal> mocks = new ArrayList<>();
-	    EstadoAnimal estadoPorDefecto = EstadoAnimal.values()[0];
 
-	    mocks.add(new Animal("A001", "Toby", "Perro", "Mestizo", LocalDate.of(2022, 5, 10), estadoPorDefecto));
-	    mocks.add(new Animal("A002", "Luna", "Gato", "Siamés", LocalDate.of(2023, 8, 20), estadoPorDefecto));
-	    mocks.add(new Animal("A003", "Max", "Perro", "Labrador", LocalDate.of(2021, 2, 15), estadoPorDefecto));
+	    mocks.add(new Animal("A001", "Toby", "Perro", "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
+	    mocks.add(new Animal("A002", "Luna", "Gato", "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
+	    mocks.add(new Animal("A003", "Max", "Perro", "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO));
+	    mocks.add(new Animal("A003", "Pablo", "Perro", "Chihuahua", LocalDate.of(2011, 12, 15), EstadoAnimal.ADOPTADO));
 
 	    return mocks;
 	}
