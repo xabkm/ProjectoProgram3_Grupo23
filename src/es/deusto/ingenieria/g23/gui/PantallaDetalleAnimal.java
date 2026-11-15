@@ -25,6 +25,7 @@ import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import es.deusto.ingenieria.g23.domain.Animal;
+import es.deusto.ingenieria.g23.domain.Especie;
 import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 
 public class PantallaDetalleAnimal extends JFrame {
@@ -230,7 +231,7 @@ public class PantallaDetalleAnimal extends JFrame {
         Animal perroPrueba = new Animal(
                 "A01",
                 "Max",
-                "Perro",
+                Especie.PERRO,
                 "Golden Retriever",
                 LocalDate.of(2023, 5, 10),
                 EstadoAnimal.DISPONIBLE,
