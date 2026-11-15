@@ -29,9 +29,9 @@ public class PantallaCatalogo extends JFrame {
 	
 	public PantallaCatalogo() {
 	
-	
+		
 		setTitle("Catálogo de Adopciones");
-		setSize(800, 500);
+		setSize(950, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
@@ -42,10 +42,13 @@ public class PantallaCatalogo extends JFrame {
 		panelNorte.setBackground(Color.WHITE);
 		txtBuscar = new JTextField(15);
 		btnBuscar = new JButton("Buscar");
-		
-//		panelNorte.add(new JLabel("Nombre: "));
-//		panelNorte.add(txtBuscar);
-//		panelNorte.add(btnBuscar);
+		btnBuscar.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnBuscar.setBackground(Color.ORANGE.darker());
+		btnBuscar.setForeground(Color.WHITE);
+		btnBuscar.setFocusPainted(false);
+		btnBuscar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnBuscar.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
+
 		
 		panelIzq = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lblNombre = new JLabel("Nombre:");
@@ -53,6 +56,8 @@ public class PantallaCatalogo extends JFrame {
 		panelIzq.add(lblNombre);
 		panelIzq.add(txtBuscar);
 		panelIzq.add(btnBuscar);
+		panelIzq.setOpaque(true);
+		panelIzq.setBackground(Color.WHITE);
 		
 		ImageIcon imUsuarioSinEscalar = new ImageIcon("resources/images/usuario.jpg");
 		Image usuarioEsc = imUsuarioSinEscalar.getImage().getScaledInstance(30, 30,Image.SCALE_SMOOTH); //recomendacion de la IA (Image.SCALE_SMOOTH) para que la imagen no salga pixelada
