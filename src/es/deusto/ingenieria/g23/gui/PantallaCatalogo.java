@@ -55,7 +55,7 @@ public class PantallaCatalogo extends JFrame {
 		panelIzq.add(btnBuscar);
 		
 		ImageIcon imUsuarioSinEscalar = new ImageIcon("resources/images/usuario.jpg");
-		Image usuarioEsc = imUsuarioSinEscalar.getImage().getScaledInstance(30, 30, DO_NOTHING_ON_CLOSE);
+		Image usuarioEsc = imUsuarioSinEscalar.getImage().getScaledInstance(30, 30,Image.SCALE_SMOOTH); //recomendacion de la IA (Image.SCALE_SMOOTH) para que la imagen no salga pixelada
 		ImageIcon imUsuario = new ImageIcon(usuarioEsc);
 		
 		btnPerfil = new JButton("Cuenta ", imUsuario);
