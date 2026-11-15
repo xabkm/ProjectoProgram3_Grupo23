@@ -3,13 +3,19 @@ package es.deusto.ingenieria.g23.gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import es.deusto.ingenieria.g23.domain.Persona;
 
 public class PantallaFormulario extends JFrame{
 
@@ -25,8 +31,10 @@ public class PantallaFormulario extends JFrame{
 		panelPrincipal.setTitle("FORMULARIO ADOPCION");
 		
 		
+		
 		// Titulo y boton de finalizar
-		separacion.add(new JLabel("FORMULARIO ADOPCION"), BorderLayout.NORTH);
+		JLabel titulo = new JLabel("FORMULARIO ADOPCION");
+		separacion.add(titulo, BorderLayout.NORTH);
 		JButton finalizar = new JButton("Finalizar");
 		separacion.add(finalizar, BorderLayout.SOUTH);
 		
@@ -50,6 +58,21 @@ public class PantallaFormulario extends JFrame{
 		separacion.add(pnlFormulario, BorderLayout.CENTER);
 		panelPrincipal.add(separacion);
 		
+		
+		// Cuando pulsemos el boton tiene que guardar la informacion
+		// Crea una nueva persona y solicitud de adopcion con ella
+		finalizar.addMouseListener(new MouseAdapter() {			
+			public void mouseClicked(MouseEvent e) {
+				JOptionPane.showConfirmDialog(null, "Desea salir?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				
+				Persona persona = new Persona();
+				persona.setNombre(campoNombre.getText());
+				
+			}
+		
+		});
+		
+		
 		panelPrincipal.setSize(800, 500);
 		panelPrincipal.setResizable(false);        
 		panelPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -71,7 +94,6 @@ public class PantallaFormulario extends JFrame{
 	    return fila;
 				
 	}
-	
 	
 	
 	
