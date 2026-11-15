@@ -3,29 +3,40 @@ package es.deusto.ingenieria.g23.gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.border.TitledBorder;
+
+import es.deusto.ingenieria.g23.domain.Especie;
 
 public class PantallaCatalogo extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private JPanel panelNorte;
-	private JPanel panelIzq;
-	private JPanel panelCentro;
+	private JPanel panelNorte, panelIzq, panelCentro, panelFiltros, pControles;
 	private JTextField txtBuscar;
-	private JButton btnBuscar, btnPerfil;
+	private JButton btnBuscar, btnPerfil,  btnLimpiar;
+	private Map<Especie, JCheckBox> checksEspecie;
+	private JCheckBox chkDisponibles;
 	
 	public PantallaCatalogo() {
 	
@@ -35,7 +46,8 @@ public class PantallaCatalogo extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
 		
-		setLayout(new BorderLayout(10, 10));
+		// cabecera
+		setLayout(new BorderLayout());
 		panelNorte = new JPanel(new BorderLayout());
 		panelNorte.setBorder(BorderFactory.createEmptyBorder(12, 15, 5, 20));
 		panelNorte.setOpaque(true);
@@ -86,9 +98,68 @@ public class PantallaCatalogo extends JFrame {
 		
 		panelCentro = new JPanel();
 		
-		add(panelNorte, BorderLayout.NORTH);
 		
-		add(panelCentro, BorderLayout.CENTER);
+		
+	
+		
+		// Panel izquierdo de filtros
+		panelFiltros = new JPanel(new BorderLayout());
+		
+		panelFiltros.setPreferredSize(new Dimension(210,0));
+		panelFiltros.setBackground(Color.WHITE);
+
+		Border margen = BorderFactory.createEmptyBorder(10, 15, 15, 0);
+		Border linea = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true);
+		TitledBorder titulo = BorderFactory.createTitledBorder(linea, "Filtros ");
+		titulo.setTitleFont(new Font("SansSerif", Font.BOLD, 13));
+		titulo.setTitleColor(Color.ORANGE.darker());
+		panelFiltros.setBorder(BorderFactory.createCompoundBorder(margen, titulo));
+		pControles = new JPanel(new GridLayout(0, 1, 5, 8));
+		pControles.setBackground(Color.WHITE);
+		pControles.setBorder(BorderFactory.createEmptyBorder(10, 12, 10, 12));
+		
+		JLabel lblEspecies = new JLabel("Especies (marca varias):");
+		lblEspecies.setFont(new Font("SansSerif", Font.BOLD, 12));
+		pControles.add(lblEspecies);
+
+		checksEspecie = new HashMap<>();
+		for (Especie esp : Especie.values()) {
+			JCheckBox chk = new JCheckBox(esp.name());
+			chk.setBackground(Color.WHITE);
+			chk.setFont(new Font("SansSerif", Font.PLAIN, 13));
+			chk.setFocusPainted(false);
+			checksEspecie.put(esp, chk);
+			pControles.add(chk);
+		}
+
+		pControles.add(new JSeparator()); //linea horizontal que divide secciones (metodo sugerido por IA)
+		
+		chkDisponibles = new JCheckBox("Solo disponibles");
+		chkDisponibles.setBackground(Color.WHITE);
+		chkDisponibles.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		chkDisponibles.setFocusPainted(false);
+		
+		btnLimpiar = new JButton("Limpiar filtros");
+		btnLimpiar.setFont(new Font("SansSerif", Font.PLAIN, 12));
+		btnLimpiar.setBackground(Color.WHITE);
+		btnLimpiar.setFocusPainted(false);
+		btnLimpiar.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		Border lineaLimp = BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1, true);
+		Border relleno = BorderFactory.createEmptyBorder(6, 10, 6, 10);
+		btnLimpiar.setBorder(BorderFactory.createCompoundBorder(lineaLimp, relleno));
+		
+		pControles.add(chkDisponibles);
+		pControles.add(new JLabel(""));
+		pControles.add(btnLimpiar);
+
+		panelFiltros.add(pControles, BorderLayout.NORTH);
+		
+		// panel central (scroll)
+		panelCentro.setBackground(Color.WHITE);
+		JScrollPane scrollCentro = new JScrollPane(panelCentro);	
+		add(panelNorte, BorderLayout.NORTH);
+		add(panelFiltros, BorderLayout.WEST);
+		add(scrollCentro, BorderLayout.CENTER);
 	}
 	
 	public static void main(String[] args) {
