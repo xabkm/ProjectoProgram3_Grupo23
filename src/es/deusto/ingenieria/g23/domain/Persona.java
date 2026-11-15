@@ -8,7 +8,8 @@ public class Persona implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String dni;
-    private String nombre;
+	private String nombre;
+    private String apellidos;
     private String email;
     private String telefono;
     private ArrayList animales_adoptados;	//Lista de los animales que adopta cada uno
@@ -35,7 +36,14 @@ public class Persona implements Serializable {
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+    
+    public String getApellidos() {return apellidos;	}
+	public void setApellidos(String apellidos) {this.apellidos = apellidos;	}
 
+	public ArrayList getAnimales_adoptados() {return animales_adoptados;}
+	public void setAnimales_adoptados(ArrayList animales_adoptados) {this.animales_adoptados = animales_adoptados;
+	}
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -11,7 +11,7 @@ public class Animal implements Serializable {
 
     private String id;
     private String nombre;
-    private String especie;
+    private  Especie especie;
     private String raza;
     private LocalDate fechaNacimiento;
     private EstadoAnimal estado;
@@ -24,7 +24,7 @@ public class Animal implements Serializable {
     	this.rutasFotos = new ArrayList<>();
     }
 
-    public Animal(String id, String nombre, String especie, String raza, LocalDate fechaNacimiento, EstadoAnimal estado) {
+    public Animal(String id, String nombre, Especie especie, String raza, LocalDate fechaNacimiento, EstadoAnimal estado) {
         this.id = id;
         this.nombre = nombre;
         this.especie = especie;
@@ -37,7 +37,7 @@ public class Animal implements Serializable {
         this.rutasFotos = new ArrayList<>();
     }
     
-    public Animal(String id, String nombre, String especie, String raza, LocalDate fechaNacimiento,
+    public Animal(String id, String nombre, Especie especie, String raza, LocalDate fechaNacimiento,
     		              EstadoAnimal estado, String descripcion, boolean vacunado, boolean esterilizado,
     		              List<String> rutasFotos) {
     		    this(id, nombre, especie, raza, fechaNacimiento, estado);
@@ -56,8 +56,8 @@ public class Animal implements Serializable {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getEspecie() { return especie; }
-    public void setEspecie(String especie) { this.especie = especie; }
+    public Especie getEspecie() { return especie; }
+    public void setEspecie(Especie especie) { this.especie = especie; }
 
     public String getRaza() { return raza; }
     public void setRaza(String raza) { this.raza = raza; }

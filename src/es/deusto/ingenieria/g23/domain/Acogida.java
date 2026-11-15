@@ -6,11 +6,11 @@ import java.util.Objects;
 public class Acogida {
 
 	private final String id_a;
-	private final String especie;
+	private final Especie especie;
 	private LocalDate fecha_ac;
 	private EstadoAnimal estado;
 	
-	public Acogida(String id_a, String especie, LocalDate fecha_ac, EstadoAnimal estado) {
+	public Acogida(String id_a, Especie especie, LocalDate fecha_ac, EstadoAnimal estado) {
 		this.id_a = id_a;
 		this.especie = especie;
 		this.fecha_ac = fecha_ac;
@@ -23,7 +23,7 @@ public class Acogida {
 	public EstadoAnimal getEstado() {return estado;}
 	public void setEstado(EstadoAnimal estado) {this.estado = estado;}
 	public String getId_a() {return id_a;}
-	public String getEspecie() {return especie;}
+	public Especie getEspecie() {return especie;}
 
 
 	@Override
