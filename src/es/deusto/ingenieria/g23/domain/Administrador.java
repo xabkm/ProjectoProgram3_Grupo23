@@ -2,6 +2,10 @@ package es.deusto.ingenieria.g23.domain;
 
 public class Administrador extends Persona{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public Administrador() {
 		// TODO Auto-generated constructor stub
 	}

@@ -31,6 +31,7 @@ import javax.swing.border.TitledBorder;
 import es.deusto.ingenieria.g23.domain.Administrador;
 import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.Especie;
+import es.deusto.ingenieria.g23.domain.Usuario;
 
 public class PantallaCatalogo extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -166,13 +167,22 @@ public class PantallaCatalogo extends JFrame {
 	
 	// abrir el panel de administracion:
 	private void abrirCuenta() {
+		
 		int opcion = JOptionPane.showConfirmDialog(this,
-				"El perfil de usuario todavía no está hecho.\n¿Quieres abrir el panel de administración?",
-				"Cuenta", JOptionPane.YES_NO_OPTION);
+				"¿Quieres abrir el panel de usuario?",
+				"Cuenta usuario", JOptionPane.YES_NO_OPTION);
 
 		if (opcion == JOptionPane.YES_OPTION) {
-			Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
-			new PantallaAdministracion(admin).setVisible(true);
+			Usuario usuario = new Usuario("00000000T", "usuario", "", "usuario@refugio", "Adolf");
+			new PantallaUsuario(usuario).setVisible(true);
+		} else {
+			int elegir = JOptionPane.showConfirmDialog(this, "¿Quieres abrir el panel de administración?",
+					"Cuenta admin", JOptionPane.YES_NO_OPTION);
+			if (elegir == JOptionPane.YES_OPTION) {
+				Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
+				new PantallaAdministracion(admin).setVisible(true);
+			}
+			
 		}
 	}
 	
