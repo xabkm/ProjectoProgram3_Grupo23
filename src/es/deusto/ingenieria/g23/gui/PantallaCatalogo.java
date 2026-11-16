@@ -193,7 +193,9 @@ public class PantallaCatalogo extends JFrame {
 					chk.setSelected(false);
 					
 				}
+				mostrarAnimales();
 			}
+			
 		});
 		
 		
@@ -224,13 +226,30 @@ public class PantallaCatalogo extends JFrame {
 	
 	private void abrirDetalle(Animal animal) {
 		PantallaDetalleAnimal detalle = new PantallaDetalleAnimal(animal, this);
-		setVisible(false);
 		detalle.setVisible(true);
 	}
 	
 	// metodo para mostrar los animales
 	private void mostrarAnimales() {
+		panelCentro.removeAll();
+
+		String texto = txtBuscar.getText().trim().toLowerCase();
+		boolean hayEspecie = false;
+		for (JCheckBox chk : checksEspecie.values()) {
+			if (chk.isSelected()) {
+				hayEspecie = true;
+			}}
+		
 		for(Animal a : animales) {
+			if (!a.getNombre().toLowerCase().contains(texto)) {
+				continue;
+			}
+			if (hayEspecie && !checksEspecie.get(a.getEspecie()).isSelected()) {
+				continue;
+			}
+			if (chkDisponibles.isSelected() && a.getEstado() != EstadoAnimal.DISPONIBLE) {
+				continue;
+			}
 			JPanel tarjeta = new JPanel(new BorderLayout(0, 6));
 			tarjeta.setPreferredSize(new Dimension(200, 235));
 			tarjeta.setOpaque(true);
