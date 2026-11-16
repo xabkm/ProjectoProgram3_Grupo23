@@ -1,46 +1,47 @@
 package es.deusto.ingenieria.g23.gui;
 
 import java.awt.BorderLayout;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import es.deusto.ingenieria.g23.domain.Animal;
-import es.deusto.ingenieria.g23.domain.Especie;
-import es.deusto.ingenieria.g23.domain.EstadoAnimal;
-import es.deusto.ingenieria.g23.domain.Administrador;
-import es.deusto.ingenieria.g23.domain.Persona;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import javax.swing.BorderFactory;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
-import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
-import es.deusto.ingenieria.g23.domain.Usuario;
-import javax.swing.SwingUtilities;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+
+import es.deusto.ingenieria.g23.domain.Administrador;
+import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.CitaAgenda;
-import es.deusto.ingenieria.g23.domain.TipoCita;
+import es.deusto.ingenieria.g23.domain.Especie;
+import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 import es.deusto.ingenieria.g23.domain.EstadoCita;
+import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
+import es.deusto.ingenieria.g23.domain.Persona;
+import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
+import es.deusto.ingenieria.g23.domain.TipoCita;
+import es.deusto.ingenieria.g23.domain.Usuario;
 
 
 
