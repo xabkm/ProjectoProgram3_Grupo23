@@ -10,7 +10,11 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
@@ -31,15 +35,17 @@ import javax.swing.border.TitledBorder;
 import es.deusto.ingenieria.g23.domain.Administrador;
 import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.Especie;
+import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 import es.deusto.ingenieria.g23.domain.Usuario;
 
 public class PantallaCatalogo extends JFrame {
 	private static final long serialVersionUID = 1L;
-	private JPanel panelNorte, panelIzq, panelCentro, panelFiltros, pControles;
+	private JPanel panelNorte, panelIzq, panelCentro, panelFiltros, pControles, contenedor;
 	private JTextField txtBuscar;
 	private JButton btnBuscar, btnPerfil,  btnLimpiar;
 	private Map<Especie, JCheckBox> checksEspecie;
 	private JCheckBox chkDisponibles;
+	private List<Animal> animales;
 	
 	public PantallaCatalogo() {
 	
@@ -156,13 +162,43 @@ public class PantallaCatalogo extends JFrame {
 		panelFiltros.add(pControles, BorderLayout.NORTH);
 		
 		// panel central (scroll)
-		panelCentro = new JPanel(new BorderLayout());
+		panelCentro = new JPanel(new GridLayout(0, 3, 15, 15));
 		panelCentro.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		panelCentro.setBackground(Color.WHITE);
-		JScrollPane scrollCentro = new JScrollPane(panelCentro);	
+		contenedor = new JPanel(new BorderLayout());
+		contenedor.setBackground(Color.WHITE);
+		contenedor.add(panelCentro, BorderLayout.NORTH);
+		JScrollPane scrollCentro = new JScrollPane(contenedor);	
 		add(panelNorte, BorderLayout.NORTH);
 		add(panelFiltros, BorderLayout.WEST);
 		add(scrollCentro, BorderLayout.CENTER);
+		
+		// eventos del buscador y filtros
+		btnBuscar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mostrarAnimales();
+				
+			}
+		});
+		
+		btnLimpiar.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				txtBuscar.setText("");
+				chkDisponibles.setSelected(false);
+				for (JCheckBox chk : checksEspecie.values()) {
+					chk.setSelected(false);
+					
+				}
+			}
+		});
+		
+		
+		animales = PantallaAdministracion.cargarAnimalesPrueba();
+		mostrarAnimales();
 	}
 	
 	// abrir el panel de administracion:
@@ -192,6 +228,68 @@ public class PantallaCatalogo extends JFrame {
 		detalle.setVisible(true);
 	}
 	
+	// metodo para mostrar los animales
+	private void mostrarAnimales() {
+		for(Animal a : animales) {
+			JPanel tarjeta = new JPanel(new BorderLayout(0, 6));
+			tarjeta.setPreferredSize(new Dimension(200, 235));
+			tarjeta.setOpaque(true);
+			tarjeta.setBackground(Color.WHITE);
+			tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
+			
+			tarjeta.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent e) {
+					tarjeta.setBackground(Color.ORANGE.darker());
+				}
+				public void mouseExited(MouseEvent e) {
+					tarjeta.setBackground(Color.WHITE);
+				}
+				public void mouseClicked(MouseEvent e) {
+					abrirDetalle(a);
+				}
+			});
+			// Hueco central para la imagen
+			JLabel lblImagen = new JLabel("Insertar imagen", JLabel.CENTER);
+			lblImagen.setForeground(Color.GRAY);
+			tarjeta.add(lblImagen, BorderLayout.CENTER);
+
+			// Datos inferiores
+			JLabel lblNombre = new JLabel(a.getNombre());
+			lblNombre.setFont(new Font("SansSerif", Font.BOLD, 15));
+
+			JLabel lblRaza = new JLabel(a.getRaza() + " - " + a.getEspecie());
+			lblRaza.setFont(new Font("SansSerif", Font.PLAIN, 12));
+			lblRaza.setForeground(Color.DARK_GRAY);
+			
+			// Preparar texto y color del estado
+						String textoEstado = a.getEstado().toString().replace("_", " ").toLowerCase();
+						textoEstado = textoEstado.substring(0, 1).toUpperCase() + textoEstado.substring(1);
+
+						Color colorEstado = new Color(180, 110, 0); // colores sugeridos por la IA
+						if (a.getEstado() == EstadoAnimal.DISPONIBLE) {
+							colorEstado = new Color(45, 106, 79);
+						} else if (a.getEstado() == EstadoAnimal.ADOPTADO) {
+							colorEstado = new Color(170, 50, 50);
+						}
+						
+			JLabel lblEstado = new JLabel(textoEstado);
+			lblEstado.setFont(new Font("SansSerif", Font.BOLD, 12));
+			lblEstado.setForeground(colorEstado);
+
+			JPanel pDatos = new JPanel(new GridLayout(3, 1));
+			pDatos.setOpaque(false);
+			pDatos.add(lblNombre);
+			pDatos.add(lblRaza);
+			pDatos.add(lblEstado);
+			tarjeta.add(pDatos, BorderLayout.SOUTH);
+
+			panelCentro.add(tarjeta);
+		}
+		// refrescar el panel: 
+		panelCentro.revalidate();
+		panelCentro.repaint();
+	}
 	
 	public static void main(String[] args) {
 		PantallaCatalogo v = new PantallaCatalogo();

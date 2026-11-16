@@ -544,7 +544,7 @@ public class PantallaAdministracion extends JFrame {
 	
 	// mocks IAG Gemini
 	// mock de animales
-	private List<Animal> cargarAnimalesPrueba() {
+	public static List<Animal> cargarAnimalesPrueba() {
 	    List<Animal> mocks = new ArrayList<>();
 
 	    mocks.add(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
