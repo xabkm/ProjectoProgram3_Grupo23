@@ -37,6 +37,12 @@ import java.time.format.DateTimeFormatter;
 import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
 import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
 import es.deusto.ingenieria.g23.domain.Usuario;
+import javax.swing.SwingUtilities;
+import es.deusto.ingenieria.g23.domain.CitaAgenda;
+import es.deusto.ingenieria.g23.domain.TipoCita;
+import es.deusto.ingenieria.g23.domain.EstadoCita;
+
+
 
 public class PantallaAdministracion extends JFrame {
 
@@ -48,7 +54,10 @@ public class PantallaAdministracion extends JFrame {
 	private List<SolicitudAdopcion> listaSolicitudes;
 	private SolicitudTableModel modeloSolicitudes;
 	private JTable tablaSolicitudes;
-
+	private List<CitaAgenda> listaCitas;
+	private CitaTableModel modeloCitas;
+	private JTable tablaCitas;
+	
 	public PantallaAdministracion(Persona usuario) {
 		
 		if (!(usuario instanceof Administrador)) {
@@ -62,6 +71,7 @@ public class PantallaAdministracion extends JFrame {
 		this.adminActual = usuario;
 		this.listaAnimales = cargarAnimalesPrueba();
 		this.listaSolicitudes = cargarSolicitudesPrueba();
+		this.listaCitas = cargarCitasPrueba();
 
 		setTitle("Panel de Administración - Usuario: " + adminActual.getNombre());
 		setSize(950, 650);
@@ -106,7 +116,7 @@ public class PantallaAdministracion extends JFrame {
 	 		tablaAnimales.setRowHeight(24);
 	 		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55);
 
-	 		// Renderizado personalizado para la columna de Estado (colores según disponibilidad)
+	 		// Renderizado personalizado para la columna de Estado 
 	 		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 				private static final long serialVersionUID = 1L;
 
@@ -298,7 +308,7 @@ public class PantallaAdministracion extends JFrame {
 			tablaSolicitudes.setRowHeight(24);
 			tablaSolicitudes.getColumnModel().getColumn(0).setPreferredWidth(60);
 
-			// Renderizado personalizado para la columna Estado (columna 4)
+			// renderizado para la columna de estados
 			tablaSolicitudes.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 				private static final long serialVersionUID = 1L;
 
@@ -418,29 +428,134 @@ public class PantallaAdministracion extends JFrame {
 		
 		
 		
-		
-		
-	// hacer luego
+
+		// pestaña de citas
 	private JPanel crearPanelAgenda() {
 	    JPanel panel = new JPanel(new BorderLayout());
-	    panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-	    panel.add(new JLabel("Agenda de citas de la Fundación", SwingConstants.CENTER), BorderLayout.CENTER);
-	    return panel;
-	}
+	    modeloCitas = new CitaTableModel(listaCitas);
+		tablaCitas = new JTable(modeloCitas);
 
+		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tablaCitas.setRowHeight(24);
+		tablaCitas.getColumnModel().getColumn(0).setPreferredWidth(50); // ID
+		tablaCitas.getColumnModel().getColumn(1).setPreferredWidth(120); // Fecha
+		tablaCitas.getColumnModel().getColumn(2).setPreferredWidth(140); // Tipo
+
+		// Renderizado para resaltar el Tipo de Cita (columna 2)
+		tablaCitas.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				if (isSelected) {
+					c.setBackground(table.getSelectionBackground());
+					c.setForeground(table.getSelectionForeground());
+				} else if (value instanceof TipoCita) {
+					c.setForeground(Color.BLACK);
+					TipoCita tipo = (TipoCita) value;
+					
+					// Usamos las constantes exactas del equipo
+					if (tipo == TipoCita.VETERINARIO) {
+						c.setBackground(new Color(220, 235, 255)); // Azul claro
+					} else if (tipo == TipoCita.ENTREVISTA_ADOPCION) {
+						c.setBackground(new Color(255, 235, 210)); // Naranja claro
+					} else if (tipo == TipoCita.PASEO) {
+						c.setBackground(new Color(215, 245, 220)); // Verde claro
+					} else if (tipo == TipoCita.VISITA_PADRINO) {
+						c.setBackground(new Color(240, 220, 255)); // Morado claro
+					} else {
+						c.setBackground(Color.WHITE); // OTRO
+					}
+				}
+				return c;
+			}
+			
+		});
+		tablaCitas.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				if (isSelected) {
+					c.setBackground(table.getSelectionBackground());
+					c.setForeground(table.getSelectionForeground());
+				} else if (value instanceof EstadoCita) {
+					c.setForeground(Color.BLACK);
+					EstadoCita estado = (EstadoCita) value;
+					if (estado == EstadoCita.ATENDIDA) {
+						c.setBackground(new Color(215, 245, 220)); // Verde claro
+					} else if (estado == EstadoCita.CANCELADA) {
+						c.setBackground(new Color(255, 215, 215)); // Rojo claro
+					} else {
+						c.setBackground(new Color(255, 248, 200)); // Amarillo claro 
+					}
+				}
+				return c;
+			}
+		});
+
+		JScrollPane scrollTabla = new JScrollPane(tablaCitas);
+		panel.add(scrollTabla, BorderLayout.CENTER);
+
+		JPanel panelBotones = new JPanel(new FlowLayout());
+		JButton btnAtender = new JButton("Atender Cita");
+		JButton btnCancelar = new JButton("Cancelar Cita");
+
+		panelBotones.add(btnAtender);
+		panelBotones.add(btnCancelar);
+		panel.add(panelBotones, BorderLayout.SOUTH);
+
+		btnAtender.addActionListener(e -> {
+			int fila = tablaCitas.getSelectedRow();
+			if (fila != -1) {
+				CitaAgenda cita = listaCitas.get(fila);
+				cita.setEstado(EstadoCita.ATENDIDA); // Cambiamos el estado
+				modeloCitas.fireTableDataChanged();
+				JOptionPane.showMessageDialog(this, "Cita " + cita.getId() + " marcada como atendida.", "Agenda", JOptionPane.INFORMATION_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(this, "Selecciona una cita primero.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+		btnCancelar.addActionListener(e -> {
+			int fila = tablaCitas.getSelectedRow();
+			if (fila != -1) {
+				CitaAgenda cita = listaCitas.get(fila);
+				int conf = JOptionPane.showConfirmDialog(this, "¿Cancelar la cita " + cita.getId() + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				if (conf == JOptionPane.YES_OPTION) {
+					cita.setEstado(EstadoCita.CANCELADA); // cambiamos el estado
+					modeloCitas.fireTableDataChanged();
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Selecciona una cita primero.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+		return panel;
+	}
 	
-	// lista temporal de animales
+	
+	// mocks IAG Gemini
+	// mock de animales
 	private List<Animal> cargarAnimalesPrueba() {
 	    List<Animal> mocks = new ArrayList<>();
 
 	    mocks.add(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
 	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
 	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO));
-	    mocks.add(new Animal("A004", "Pablo", Especie.PERRO, "Chihuahua", LocalDate.of(2011, 12, 15), EstadoAnimal.ADOPTADO));
+	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO));
 
 	    return mocks;
 	}
-	// Lista temporal de solicitudes de adopción
+ 
+	
+	// mocks de adopcion
 	private List<SolicitudAdopcion> cargarSolicitudesPrueba() {
 		List<SolicitudAdopcion> mocks = new ArrayList<>();
 
@@ -457,6 +572,16 @@ public class PantallaAdministracion extends JFrame {
 		return mocks;
 	}
 	
+	// mocks de citas
+	private List<CitaAgenda> cargarCitasPrueba() {
+		List<CitaAgenda> mocks = new ArrayList<>();
+
+		mocks.add(new CitaAgenda("C001", LocalDateTime.now().plusDays(1).withHour(10).withMinute(30), TipoCita.ENTREVISTA_ADOPCION, listaAnimales.get(0), adminActual, EstadoCita.PENDIENTE));
+		mocks.add(new CitaAgenda("C002", LocalDateTime.now().plusDays(2).withHour(17).withMinute(0), TipoCita.VETERINARIO, listaAnimales.get(1), adminActual, EstadoCita.ATENDIDA));
+		mocks.add(new CitaAgenda("C003", LocalDateTime.now().plusDays(3).withHour(12).withMinute(15), TipoCita.PASEO, listaAnimales.get(2), adminActual, EstadoCita.CANCELADA));
+
+		return mocks;
+	}
 	// metodo para ver la ventana desde aqui
 	public static void main(String[] args) {
 		Administrador adminPrueba = new Administrador();
