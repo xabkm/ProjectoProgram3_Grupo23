@@ -60,7 +60,7 @@ public class PantallaUsuario extends JFrame {
 		setLayout(new BorderLayout(10, 10));
 		
 		JPanel panelNorte = new JPanel(new BorderLayout());
-		panelNorte.setBackground(new Color(45, 106, 79));
+		panelNorte.setBackground(Color.blue);
 		panelNorte.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		JLabel lblTitulo = new JLabel("BIENVENIDO/A, " + usuarioActual.getNombre().toUpperCase(), JLabel.CENTER);
 		lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
@@ -80,37 +80,108 @@ public class PantallaUsuario extends JFrame {
 	
 	
 	private JPanel crearPanelAnimales() {
-		JPanel panel = new JPanel(new BorderLayout(5, 10));
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+		JPanel panelanimales = new JPanel(new BorderLayout(5, 10));
+		panelanimales.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		modeloAnimales = new AnimalTableModel(listaAnimales);
 		tablaAnimales = new JTable(modeloAnimales);
+		tablaAnimales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		tablaAnimales.setRowHeight(24);
+		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55);
+		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+			
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				if(isSelected) {
+					c.setBackground(table.getBackground());
+					c.setForeground(table.getForeground());
+					// IAG Gemini
+				} else if (value instanceof EstadoAnimal) {
+					c.setForeground(Color.black);
+					EstadoAnimal estado =(EstadoAnimal) value;
+					if(estado == EstadoAnimal.DISPONIBLE) {
+						c.setBackground(Color.green);
+					} else if (estado == EstadoAnimal.ADOPTADO) {
+						c.setBackground(Color.red);
+					} else {
+						c.setBackground(Color.yellow);
+					}
+				}
+				return c;
+			}
+		});
+		JScrollPane scroll = new JScrollPane(tablaAnimales);
+		JPanel panelTabla = new JPanel(new BorderLayout());
+		panelTabla.setBorder(BorderFactory.createTitledBorder("Nuestros animales"));
+		panelTabla.add(scroll, BorderLayout.CENTER);
+		panelanimales.add(panelTabla, BorderLayout.CENTER);
+		JPanel panelBotones = new JPanel(new FlowLayout());
+		JButton btnAdoptar = new JButton("Solicitar Adopción");
+		btnAdoptar.setFont(new Font("Arial", Font.BOLD, 14));
+		btnAdoptar.setBackground(Color.black);
+		btnAdoptar.setForeground(Color.WHITE);
+		panelBotones.add(btnAdoptar);
+		panelanimales.add(panelBotones, BorderLayout.SOUTH);
 		
+		btnAdoptar.addActionListener(e -> solicitarAdopcion());
+
 		
-		return panel;
+		return panelanimales;
 	}
+	private void solicitarAdopcion() {
+		int fila = tablaAnimales.getSelectedRow();
+		if (fila == -1) {
+			JOptionPane.showMessageDialog(this, "Selecciona un animal de la lista para adoptarlo.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		Animal seleccionado = listaAnimales.get(fila);
+		if (seleccionado.getEstado() != EstadoAnimal.DISPONIBLE) {
+			JOptionPane.showMessageDialog(this, "Lo sentimos, " + seleccionado.getNombre() + " no está disponible actualmente.", "No disponible", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		int opcion = JOptionPane.showConfirmDialog(this,
+				"¿Deseas enviar una solicitud de adopción para " + seleccionado.getNombre() + "?",
+				"Confirmar solicitud", JOptionPane.YES_NO_OPTION);
+		if (opcion == JOptionPane.YES_OPTION) {
+			
+			SolicitudAdopcion nuevaSolicitud = new SolicitudAdopcion(
+					"S" + (misSolicitudes.size() + 100),
+					seleccionado,
+					(Usuario)usuarioActual,
+					LocalDateTime.now(),
+					EstadoSolicitud.PENDIENTE
+			);
+			misSolicitudes.add(nuevaSolicitud);
+			modeloSolicitudes.fireTableDataChanged(); 
+			JOptionPane.showMessageDialog(this, "Solicitud enviada correctamente. El equipo la revisará pronto.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
+
+
 	
 	
 	private JPanel crearPanelMisSolicitudes() {
-		JPanel panel = new JPanel(new BorderLayout(5, 10));
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+		JPanel panelsolicitudes = new JPanel(new BorderLayout(5, 10));
+		panelsolicitudes.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		modeloSolicitudes = new SolicitudTableModel(misSolicitudes);
 		tablaSolicitudes = new JTable(modeloSolicitudes);
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
 		
-		return panel;
+		return panelsolicitudes;
 	}
 	
 	private JPanel crearPanelMisCitas() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+		JPanel panelcitas = new JPanel(new BorderLayout());
+		panelcitas.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		
 		modeloCitas = new CitaTableModel(misCitas);
 		tablaCitas = new JTable(modeloCitas);
 		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaCitas.setRowHeight(24);
 		
-		return panel;
+		return panelcitas;
 	}
 	
 	private List<Animal> cargarAnimalesPrueba() {
