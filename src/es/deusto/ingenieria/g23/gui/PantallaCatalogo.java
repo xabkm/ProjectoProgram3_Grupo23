@@ -28,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+import es.deusto.ingenieria.g23.domain.Administrador;
+import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.Especie;
 
 public class PantallaCatalogo extends JFrame {
@@ -86,17 +88,15 @@ public class PantallaCatalogo extends JFrame {
 		btnPerfil.setContentAreaFilled(false); // linea de codigo hecha mediante IA para que al tocar el boton no salga el color de seleccion
 		btnPerfil.addActionListener(new ActionListener() {
 	
-		
-			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Pantalla de perfil pendiente");
-				
+				abrirCuenta();
 			}
+			
 		});
 		panelNorte.add(btnPerfil, BorderLayout.EAST);
 		panelNorte.add(panelIzq, BorderLayout.WEST);
 		
-		panelCentro = new JPanel();
+		
 		
 		
 		
@@ -124,7 +124,7 @@ public class PantallaCatalogo extends JFrame {
 
 		checksEspecie = new HashMap<>();
 		for (Especie esp : Especie.values()) {
-			JCheckBox chk = new JCheckBox(esp.name());
+			JCheckBox chk = new JCheckBox(esp.toString());
 			chk.setBackground(Color.WHITE);
 			chk.setFont(new Font("SansSerif", Font.PLAIN, 13));
 			chk.setFocusPainted(false);
@@ -155,12 +155,33 @@ public class PantallaCatalogo extends JFrame {
 		panelFiltros.add(pControles, BorderLayout.NORTH);
 		
 		// panel central (scroll)
+		panelCentro = new JPanel(new BorderLayout());
+		panelCentro.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 		panelCentro.setBackground(Color.WHITE);
 		JScrollPane scrollCentro = new JScrollPane(panelCentro);	
 		add(panelNorte, BorderLayout.NORTH);
 		add(panelFiltros, BorderLayout.WEST);
 		add(scrollCentro, BorderLayout.CENTER);
 	}
+	
+	// abrir el panel de administracion:
+	private void abrirCuenta() {
+		int opcion = JOptionPane.showConfirmDialog(this,
+				"El perfil de usuario todavía no está hecho.\n¿Quieres abrir el panel de administración?",
+				"Cuenta", JOptionPane.YES_NO_OPTION);
+
+		if (opcion == JOptionPane.YES_OPTION) {
+			Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
+		//	PantallaAdministracion.abrir(admin);
+		}
+	}
+	
+	private void abrirDetalle(Animal animal) {
+		PantallaDetalleAnimal detalle = new PantallaDetalleAnimal(animal, this);
+		setVisible(false);
+		detalle.setVisible(true);
+	}
+	
 	
 	public static void main(String[] args) {
 		PantallaCatalogo v = new PantallaCatalogo();
