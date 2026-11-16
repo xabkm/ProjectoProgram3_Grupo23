@@ -12,16 +12,18 @@ public class CitaAgenda implements Serializable {
     private TipoCita tipoCita;
     private Animal animal;
     private Persona personaAsignada;
+    private EstadoCita estado;
 
     public CitaAgenda() {
     }
 
-    public CitaAgenda(String id, LocalDateTime fechaHora, TipoCita tipoCita, Animal animal, Persona personaAsignada) {
+    public CitaAgenda(String id, LocalDateTime fechaHora, TipoCita tipoCita, Animal animal, Persona personaAsignada, EstadoCita estado) {
         this.id = id;
         this.fechaHora = fechaHora;
         this.tipoCita = tipoCita;
         this.animal = animal;
         this.personaAsignada = personaAsignada;
+        this.estado = estado; 
     }
 
     // Getters y Setters
@@ -40,7 +42,16 @@ public class CitaAgenda implements Serializable {
     public Persona getPersonaAsignada() { return personaAsignada; }
     public void setPersonaAsignada(Persona personaAsignada) { this.personaAsignada = personaAsignada; }
 
-    @Override
+    
+    public EstadoCita getEstado() {
+		return estado;
+	}
+
+	public void setEstado(EstadoCita estado) {
+		this.estado = estado;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
