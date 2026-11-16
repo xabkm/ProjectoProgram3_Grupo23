@@ -80,7 +80,7 @@ public class PantallaFormulario extends JFrame{
 		
 		panelPrincipal.setSize(500, 350);
 		panelPrincipal.setResizable(false);        
-		panelPrincipal.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		panelPrincipal.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		panelPrincipal.setLocationRelativeTo(null);        
 		panelPrincipal.setVisible(true);
 	}

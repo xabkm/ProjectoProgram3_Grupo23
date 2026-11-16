@@ -191,7 +191,7 @@ public class PantallaDetalleAnimal extends JFrame {
         btnAdoptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Redirigiendo al formulario para adoptar a " + animal.getNombre());
+            	 PantallaFormulario.main(null);
             }
         });
     }

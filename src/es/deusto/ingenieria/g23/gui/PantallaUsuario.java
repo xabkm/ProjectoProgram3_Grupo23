@@ -168,7 +168,7 @@ public class PantallaUsuario extends JFrame {
 		tablaSolicitudes = new JTable(modeloSolicitudes);
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
-		
+		panelsolicitudes.add(new JScrollPane(tablaSolicitudes), BorderLayout.CENTER);
 		return panelsolicitudes;
 	}
 	
@@ -180,7 +180,7 @@ public class PantallaUsuario extends JFrame {
 		tablaCitas = new JTable(modeloCitas);
 		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaCitas.setRowHeight(24);
-		
+		panelcitas.add(new JScrollPane(tablaCitas), BorderLayout.CENTER);
 		return panelcitas;
 	}
 	
