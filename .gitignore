@@ -1,19 +1,38 @@
-# Archivos compilados de Java
+# Código compilado
 *.class
-/bin/
+bin/
+build/
+out/
+target/
 
-# Archivos de configuración personal de Eclipse, classpath y project ya están subidos al repo
-.settings/
-
-#ficheros temporales de SQLite 
-*-journal
-*-wal
-*-shm
-
-#ficheros de log
+# Logs y errores de la JVM
 *.log
+hs_err_pid*
 
-# Archivos del sistema operativo
+# Eclipse
+.metadata/
+.settings/
+.project
+.classpath
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# Ficheros de SQLite
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+
+# Ficheros del sistema operativo y temporales
 .DS_Store
 Thumbs.db
-
+desktop.ini
+*.bak
+*~
