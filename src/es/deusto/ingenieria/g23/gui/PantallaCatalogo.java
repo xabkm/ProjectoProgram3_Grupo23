@@ -172,7 +172,7 @@ public class PantallaCatalogo extends JFrame {
 
 		if (opcion == JOptionPane.YES_OPTION) {
 			Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
-		//	PantallaAdministracion.abrir(admin);
+			new PantallaAdministracion(admin).setVisible(true);
 		}
 	}
 	
