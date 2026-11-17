@@ -14,7 +14,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -184,12 +185,32 @@ public class PantallaAdministracion extends JFrame {
 	    panelBotones.add(btnEditar);
 	    panelBotones.add(btnEliminar);
 	    panel.add(panelBotones, BorderLayout.SOUTH);
+	    
 	 // Conectamos los eventos de los botones del CRUD
-	 		btnNuevo.addActionListener(e -> nuevoAnimal());
-	 		btnEditar.addActionListener(e -> editarAnimal());
-	 		btnEliminar.addActionListener(e -> eliminarAnimal());
-	    return panel;
-	}
+	 		btnNuevo.addActionListener(new ActionListener() {
+	 			@Override
+	 			public void actionPerformed(ActionEvent e) {
+	 				nuevoAnimal();
+	 			}
+	 		});
+
+	 		btnEditar.addActionListener(new ActionListener() {
+	 			@Override
+	 			public void actionPerformed(ActionEvent e) {
+	 				editarAnimal();
+	 			}
+	 		});
+
+	 		btnEliminar.addActionListener(new ActionListener() {
+	 			@Override
+	 			public void actionPerformed(ActionEvent e) {
+	 				eliminarAnimal();
+	 			}
+	 		});
+	 		return panel;
+	 		}
+	
+	
 	//  formulario con JOptionPane para dar de alta un nuevo animal
 		private void nuevoAnimal() {
 			JTextField txtId = new JTextField();
@@ -361,8 +382,19 @@ public class PantallaAdministracion extends JFrame {
 			panelBotones.add(btnEliminarSol);
 			panel.add(panelBotones, BorderLayout.SOUTH);
 
-			btnGestionar.addActionListener(e -> gestionarSolicitud());
-			btnEliminarSol.addActionListener(e -> eliminarSolicitud());
+			btnGestionar.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					gestionarSolicitud();
+				}
+			});
+
+			btnEliminarSol.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					eliminarSolicitud();
+				}
+			});
 
 			return panel;
 		}
@@ -512,29 +544,40 @@ public class PantallaAdministracion extends JFrame {
 		panelBotones.add(btnCancelar);
 		panel.add(panelBotones, BorderLayout.SOUTH);
 
-		btnAtender.addActionListener(e -> {
-			int fila = tablaCitas.getSelectedRow();
-			if (fila != -1) {
-				CitaAgenda cita = listaCitas.get(fila);
-				cita.setEstado(EstadoCita.ATENDIDA); // Cambiamos el estado
-				modeloCitas.fireTableDataChanged();
-				JOptionPane.showMessageDialog(this, "Cita " + cita.getId() + " marcada como atendida.", "Agenda", JOptionPane.INFORMATION_MESSAGE);
-			} else {
-				JOptionPane.showMessageDialog(this, "Selecciona una cita primero.", "Aviso", JOptionPane.WARNING_MESSAGE);
+		btnAtender.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int fila = tablaCitas.getSelectedRow();
+				if (fila != -1) {
+					CitaAgenda cita = listaCitas.get(fila);
+					cita.setEstado(EstadoCita.ATENDIDA);
+					modeloCitas.fireTableDataChanged();
+					JOptionPane.showMessageDialog(PantallaAdministracion.this,
+							"Cita " + cita.getId() + " marcada como atendida.", "Agenda",
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					JOptionPane.showMessageDialog(PantallaAdministracion.this, "Selecciona una cita primero.",
+							"Aviso", JOptionPane.WARNING_MESSAGE);
+				}
 			}
 		});
 
-		btnCancelar.addActionListener(e -> {
-			int fila = tablaCitas.getSelectedRow();
-			if (fila != -1) {
-				CitaAgenda cita = listaCitas.get(fila);
-				int conf = JOptionPane.showConfirmDialog(this, "¿Cancelar la cita " + cita.getId() + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
-				if (conf == JOptionPane.YES_OPTION) {
-					cita.setEstado(EstadoCita.CANCELADA); // cambiamos el estado
-					modeloCitas.fireTableDataChanged();
+		btnCancelar.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int fila = tablaCitas.getSelectedRow();
+				if (fila != -1) {
+					CitaAgenda cita = listaCitas.get(fila);
+					int conf = JOptionPane.showConfirmDialog(PantallaAdministracion.this,
+							"¿Cancelar la cita " + cita.getId() + "?", "Confirmar", JOptionPane.YES_NO_OPTION);
+					if (conf == JOptionPane.YES_OPTION) {
+						cita.setEstado(EstadoCita.CANCELADA);
+						modeloCitas.fireTableDataChanged();
+					}
+				} else {
+					JOptionPane.showMessageDialog(PantallaAdministracion.this, "Selecciona una cita primero.",
+							"Aviso", JOptionPane.WARNING_MESSAGE);
 				}
-			} else {
-				JOptionPane.showMessageDialog(this, "Selecciona una cita primero.", "Aviso", JOptionPane.WARNING_MESSAGE);
 			}
 		});
 
