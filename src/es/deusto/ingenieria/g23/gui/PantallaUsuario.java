@@ -367,7 +367,7 @@ public class PantallaUsuario extends JFrame {
 		return citas;
 	}
 	public static void main(String[] args) {
-		Usuario usuarioPrueba = new Usuario(); // más que nada para poder probar la pantalla usuario sin tener que abrir todo el rato el main
+		Usuario usuarioPrueba = new Usuario(); // más que nada para poder probar la pantalla usuario sin tener que abrir todo el rato el main y para saber que persona esta asignada
 		usuarioPrueba.setNombre("Guille"); 
 		PantallaUsuario ventana = new PantallaUsuario(usuarioPrueba);
 		ventana.setVisible(true);

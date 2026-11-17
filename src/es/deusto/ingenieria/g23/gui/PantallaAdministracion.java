@@ -545,12 +545,27 @@ public class PantallaAdministracion extends JFrame {
 	// mocks IAG Gemini
 	// mock de animales
 	public static List<Animal> cargarAnimalesPrueba() {
+		 List<String> fotosPruebaToby = new ArrayList<>();
+		 fotosPruebaToby.add("resources/images/A001.png");
+		 fotosPruebaToby.add("resources/images/A0012.png");
+	     List<String> fotosPruebaLuna = new ArrayList<>();
+        fotosPruebaLuna.add("resources/images/A002.png");
+        fotosPruebaLuna.add("resources/images/A0022.png");
+        fotosPruebaLuna.add("resources/images/A0023.png");
+        List<String> fotosPruebaMax = new ArrayList<>();
+        fotosPruebaMax.add("resources/images/max1.png");
+        fotosPruebaMax.add("resources/images/max2.png");
+        List<String> fotosPruebaKivi = new ArrayList<>();
+        fotosPruebaKivi.add("resources/images/A004.png");
+        fotosPruebaKivi.add("resources/images/A0041.png");
+       
+	        
 	    List<Animal> mocks = new ArrayList<>();
 
-	    mocks.add(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
-	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
-	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO));
-	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO));
+	    mocks.add(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE,"Es un perro miedoso",true,true,fotosPruebaToby));
+	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA, "Es una gata que trepa muy bien",false, true,fotosPruebaLuna));
+	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO,"Es un perro jugueton",true,false,fotosPruebaMax));
+	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO,"Le encanta correr pero se cansa rápido",false, false,fotosPruebaKivi ));
 
 	    return mocks;
 	}

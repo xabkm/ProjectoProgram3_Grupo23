@@ -269,9 +269,25 @@ public class PantallaCatalogo extends JFrame {
 				}
 			});
 			// Hueco central para la imagen
-			JLabel lblImagen = new JLabel("Insertar imagen", JLabel.CENTER);
-			lblImagen.setForeground(Color.GRAY);
+			JLabel lblImagen = new JLabel();
+			lblImagen.setHorizontalAlignment(JLabel.CENTER);
+			
+			String rutaImagen = "resources/images/" + a.getId() + ".png"; 
+			java.io.File archivoImagen = new java.io.File(rutaImagen);// Ayuda de la ia
+
+			if (archivoImagen.exists()) {
+			    // Si la imagen existe, la cargamos y la escalamos a 220x170 píxeles
+			    ImageIcon iconoOriginal = new ImageIcon(rutaImagen);
+			    Image imagenEscalada = iconoOriginal.getImage().getScaledInstance(220, 170, Image.SCALE_SMOOTH); // Ayuda de la ia
+			    lblImagen.setIcon(new ImageIcon(imagenEscalada));
+			} else {
+			    // Si no hay foto en la carpeta, mostramos un texto por defecto
+			    lblImagen.setText("Sin foto");
+			    lblImagen.setForeground(Color.LIGHT_GRAY);
+			}
+
 			tarjeta.add(lblImagen, BorderLayout.CENTER);
+			
 
 			// Datos inferiores
 			JLabel lblNombre = new JLabel(a.getNombre());

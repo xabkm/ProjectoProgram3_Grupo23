@@ -152,6 +152,7 @@ public class PantallaDetalleAnimal extends JFrame {
         add(panelSur, BorderLayout.SOUTH);
 
         // Mostrar la primera foto al iniciar
+        
         mostrarFoto();
         iniciarCarruselFotos();
         // Evento boton Atras
