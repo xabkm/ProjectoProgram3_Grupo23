@@ -102,11 +102,11 @@ public class PantallaUsuario extends JFrame {
 					c.setForeground(Color.black);
 					EstadoAnimal estado =(EstadoAnimal) value;
 					if(estado == EstadoAnimal.DISPONIBLE) {
-						c.setBackground(Color.green);
+						c.setBackground(new Color(215, 245, 220));
 					} else if (estado == EstadoAnimal.ADOPTADO) {
-						c.setBackground(Color.red);
+						c.setBackground(new Color(255, 215, 215));
 					} else {
-						c.setBackground(Color.yellow);
+						c.setBackground(new Color(255, 248, 200));
 					}
 				}
 				return c;
@@ -180,9 +180,9 @@ public class PantallaUsuario extends JFrame {
 			} else if (value instanceof EstadoSolicitud) {
 				c.setForeground(Color.BLACK);
 				String estadoTexto = value.toString().toUpperCase();
-				if (estadoTexto.contains("APROB") || estadoTexto.contains("ACEPT")) {
+				if (estadoTexto.contains("ACEPTAR")) {
 					c.setBackground(new Color(215, 245, 220)); // Verde
-				} else if (estadoTexto.contains("RECHAZ") || estadoTexto.contains("DENEG")) {
+				} else if (estadoTexto.contains("RECHAZAR") || estadoTexto.contains("DENEGAR")) {
 					c.setBackground(new Color(255, 215, 215)); // Rojo
 				} else {
 					c.setBackground(new Color(255, 248, 200)); // Amarillo
@@ -191,6 +191,24 @@ public class PantallaUsuario extends JFrame {
 			return c;
 			}
 			});
+		JPanel panelBotones = new JPanel(new FlowLayout());
+		JButton btnCancelar = new JButton("Retirar Solicitud");
+		btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
+		btnCancelar.setBackground(Color.black);
+		btnCancelar.setForeground(Color.WHITE);
+		panelBotones.add(btnCancelar);
+		panelsolicitudes.add(panelBotones, BorderLayout.SOUTH);
+		btnCancelar.addActionListener(e -> {
+			int fila = tablaSolicitudes.getSelectedRow();
+			if (fila != -1) {
+				int conf = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres cancelar tu solicitud?", "Confirmar", JOptionPane.YES_NO_OPTION);
+				if (conf == JOptionPane.YES_OPTION) {
+					misSolicitudes.remove(fila);
+					modeloSolicitudes.fireTableDataChanged();
+				}
+			}
+		});
+
 		panelsolicitudes.add(new JScrollPane(tablaSolicitudes), BorderLayout.CENTER);
 		return panelsolicitudes;
 	}
@@ -229,7 +247,7 @@ public class PantallaUsuario extends JFrame {
 	}
 	private List<CitaAgenda> cargarMisCitasPrueba() {
 		List<CitaAgenda> citas = new ArrayList<>();
-		citas.add(new CitaAgenda("C001", LocalDateTime.now().plusDays(2).withHour(17).withMinute(0), TipoCita.ENTREVISTA_ADOPCION, listaAnimales.get(1), usuarioActual, EstadoCita.PENDIENTE));
+		citas.add(new CitaAgenda("C001", LocalDateTime.of(2026,12,26,14,20), TipoCita.ENTREVISTA_ADOPCION, listaAnimales.get(1), usuarioActual, EstadoCita.PENDIENTE));
 		return citas;
 	}
 	public static void main(String[] args) {
