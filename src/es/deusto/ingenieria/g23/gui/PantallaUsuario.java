@@ -60,14 +60,14 @@ public class PantallaUsuario extends JFrame {
 		setLayout(new BorderLayout(10, 10));
 		
 		JPanel panelNorte = new JPanel(new BorderLayout());
-		panelNorte.setBackground(Color.blue);
+		panelNorte.setBackground(new Color(45, 106, 79));
 		panelNorte.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-		JLabel lblTitulo = new JLabel("BIENVENIDO/A, " + usuarioActual.getNombre().toUpperCase(), JLabel.CENTER);
+		JLabel lblTitulo = new JLabel("BIENVENIDO/A, " + usuarioActual.getNombre().toUpperCase(), JLabel.CENTER); 
 		lblTitulo.setFont(new Font("Arial", Font.BOLD, 18));
 		lblTitulo.setForeground(Color.WHITE);
 		panelNorte.add(lblTitulo, BorderLayout.CENTER);
 		
-		JTabbedPane pestanas = new JTabbedPane();
+		JTabbedPane pestanas = new JTabbedPane(); // crear las pestañas para poder cambiar de unas a otras
 		pestanas.addTab("Animales en Adopción", crearPanelAnimales());
 		pestanas.addTab("Mis Solicitudes", crearPanelMisSolicitudes());
 		pestanas.addTab("Mis Citas", crearPanelMisCitas());
@@ -87,12 +87,13 @@ public class PantallaUsuario extends JFrame {
 		tablaAnimales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaAnimales.setRowHeight(24);
 		
-		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55);
-		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
-			
+		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55); 
+		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() { // cambiar los colores dependiendo del estado 
+			private static final long serialVersionUID = 1L;
 			@Override
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column) {
+				
 				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 				if(isSelected) {
 					c.setBackground(table.getBackground());
@@ -102,11 +103,11 @@ public class PantallaUsuario extends JFrame {
 					c.setForeground(Color.black);
 					EstadoAnimal estado =(EstadoAnimal) value;
 					if(estado == EstadoAnimal.DISPONIBLE) {
-						c.setBackground(new Color(215, 245, 220));
+						c.setBackground(new Color(215, 245, 220)); //verde
 					} else if (estado == EstadoAnimal.ADOPTADO) {
-						c.setBackground(new Color(255, 215, 215));
+						c.setBackground(new Color(255, 215, 215)); // rojo
 					} else {
-						c.setBackground(new Color(255, 248, 200));
+						c.setBackground(new Color(255, 248, 200));//Amarillo
 					}
 				}
 				return c;
@@ -130,45 +131,45 @@ public class PantallaUsuario extends JFrame {
 		
 		return panelanimales;
 	}
+	
 	private void solicitarAdopcion() {
 		int fila = tablaAnimales.getSelectedRow();
-		if (fila == -1) {
+		if (fila == -1) { // si no se selecciona animal se avisa que hay que seleccionar uno
 			JOptionPane.showMessageDialog(this, "Selecciona un animal de la lista para adoptarlo.", "Aviso", JOptionPane.WARNING_MESSAGE);
 			return;
 		}
 		Animal seleccionado = listaAnimales.get(fila);
-		if (seleccionado.getEstado() != EstadoAnimal.DISPONIBLE) {
+		if (seleccionado.getEstado() != EstadoAnimal.DISPONIBLE) { // si en el momento el animal no esta disponible (aunque no sea que este directamente adoptado) se le avisa
 			JOptionPane.showMessageDialog(this, "Lo sentimos, " + seleccionado.getNombre() + " no está disponible actualmente.", "No disponible", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
-		int opcion = JOptionPane.showConfirmDialog(this,
+		int pregunta = JOptionPane.showConfirmDialog(this, // pedimos confirmación por si acaso
 				"¿Deseas enviar una solicitud de adopción para " + seleccionado.getNombre() + "?",
 				"Confirmar solicitud", JOptionPane.YES_NO_OPTION);
-		if (opcion == JOptionPane.YES_OPTION) {
+		if (pregunta == JOptionPane.YES_OPTION) {
 			
-			SolicitudAdopcion nuevaSolicitud = new SolicitudAdopcion(
-					"S" + (misSolicitudes.size() + 100),
+			SolicitudAdopcion nuevaSolicitud = new SolicitudAdopcion( // creamos la solicitud
+					"S" + (misSolicitudes.size() + 1),
 					seleccionado,
-					(Usuario)usuarioActual,
+					(Usuario)usuarioActual, //nos aseguramos que es un usuario y no un administrador
 					LocalDateTime.now(),
 					EstadoSolicitud.PENDIENTE
 			);
 			misSolicitudes.add(nuevaSolicitud);
-			modeloSolicitudes.fireTableDataChanged(); 
-			JOptionPane.showMessageDialog(this, "Solicitud enviada correctamente. El equipo la revisará pronto.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+			modeloSolicitudes.fireTableDataChanged(); // actualizamos la información
+			JOptionPane.showMessageDialog(this, "Solicitud enviada. Se revisará pronto.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 
-
-	
-	
 	private JPanel crearPanelMisSolicitudes() {
+		
 		JPanel panelsolicitudes = new JPanel(new BorderLayout(5, 10));
 		panelsolicitudes.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 		modeloSolicitudes = new SolicitudTableModel(misSolicitudes);
 		tablaSolicitudes = new JTable(modeloSolicitudes);
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
+		
 		tablaSolicitudes.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 		private static final long serialVersionUID = 1L;
 		@Override
@@ -179,10 +180,11 @@ public class PantallaUsuario extends JFrame {
 				c.setForeground(table.getSelectionForeground());
 			} else if (value instanceof EstadoSolicitud) {
 				c.setForeground(Color.BLACK);
-				String estadoTexto = value.toString().toUpperCase();
-				if (estadoTexto.contains("ACEPTAR")) {
+				EstadoSolicitud solicitud = (EstadoSolicitud) value;
+				
+				if (solicitud == EstadoSolicitud.APROBADA) {
 					c.setBackground(new Color(215, 245, 220)); // Verde
-				} else if (estadoTexto.contains("RECHAZAR") || estadoTexto.contains("DENEGAR")) {
+				} else if (solicitud == EstadoSolicitud.RECHAZADA) {
 					c.setBackground(new Color(255, 215, 215)); // Rojo
 				} else {
 					c.setBackground(new Color(255, 248, 200)); // Amarillo
@@ -191,6 +193,7 @@ public class PantallaUsuario extends JFrame {
 			return c;
 			}
 			});
+		
 		JPanel panelBotones = new JPanel(new FlowLayout());
 		JButton btnCancelar = new JButton("Retirar Solicitud");
 		btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
@@ -200,16 +203,25 @@ public class PantallaUsuario extends JFrame {
 		panelsolicitudes.add(panelBotones, BorderLayout.SOUTH);
 		btnCancelar.addActionListener(e -> {
 			int fila = tablaSolicitudes.getSelectedRow();
+			
 			if (fila != -1) {
 				int conf = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres cancelar tu solicitud?", "Confirmar", JOptionPane.YES_NO_OPTION);
 				if (conf == JOptionPane.YES_OPTION) {
 					misSolicitudes.remove(fila);
 					modeloSolicitudes.fireTableDataChanged();
-				}
+				} 
+			}else {
+				JOptionPane.showMessageDialog(this, "Selecciona una solicitud para retirarla","Aviso", JOptionPane.WARNING_MESSAGE);
+				
 			}
 		});
 
-		panelsolicitudes.add(new JScrollPane(tablaSolicitudes), BorderLayout.CENTER);
+		
+		JScrollPane scroll = new JScrollPane(tablaSolicitudes);
+		JPanel panelTablaSol = new JPanel(new BorderLayout());
+		panelTablaSol.setBorder(BorderFactory.createTitledBorder("Tus Solicitudes"));
+		panelTablaSol.add(scroll, BorderLayout.CENTER);
+		panelsolicitudes.add(panelTablaSol, BorderLayout.CENTER);
 		return panelsolicitudes;
 	}
 	
@@ -221,39 +233,44 @@ public class PantallaUsuario extends JFrame {
 		tablaCitas = new JTable(modeloCitas);
 		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaCitas.setRowHeight(24);
-	
+		
 
 		
 		
+		JScrollPane scroll = new JScrollPane(tablaCitas);
+		JPanel panelTablaCit = new JPanel(new BorderLayout());
+		panelTablaCit.setBorder(BorderFactory.createTitledBorder("Tus Citas"));
+		panelTablaCit.add(scroll, BorderLayout.CENTER);
+		panelcitas.add(panelTablaCit, BorderLayout.CENTER);
 		
-		panelcitas.add(new JScrollPane(tablaCitas), BorderLayout.CENTER);
 		return panelcitas;
 	}
 	
 	private List<Animal> cargarAnimalesPrueba() {
 		List<Animal> animales = new ArrayList<>();
-		animales.add(new Animal("A001", "Bizkor", Especie.PERRO, "Golden", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
-		animales.add(new Animal("A002", "Pilot", Especie.GATO, "Persa", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
-		animales.add(new Animal("A003", "Zuri", Especie.PERRO, "Pastor", LocalDate.of(2021, 2, 15), EstadoAnimal.DISPONIBLE));
+		animales.add(new Animal("A1", "Bizkor", Especie.PERRO, "Golden", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE));
+		animales.add(new Animal("A2", "Pilot", Especie.GATO, "Persa", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA));
+		animales.add(new Animal("A3", "Zuri", Especie.PERRO, "Pastor", LocalDate.of(2021, 2, 15), EstadoAnimal.DISPONIBLE));
 		return animales;
 	}
 	
 	private List<SolicitudAdopcion> cargarMisSolicitudesPrueba() {
 		List<SolicitudAdopcion> solicitudes = new ArrayList<>();
 		if(usuarioActual instanceof Usuario) {
-			solicitudes.add(new SolicitudAdopcion("S001", listaAnimales.get(1), (Usuario)usuarioActual, LocalDateTime.now().minusDays(2), EstadoSolicitud.PENDIENTE));
+			solicitudes.add(new SolicitudAdopcion("S1", listaAnimales.get(1), (Usuario)usuarioActual, LocalDateTime.now().minusDays(2), EstadoSolicitud.PENDIENTE));
 		}
 		return solicitudes;
 	}
 	private List<CitaAgenda> cargarMisCitasPrueba() {
 		List<CitaAgenda> citas = new ArrayList<>();
-		citas.add(new CitaAgenda("C001", LocalDateTime.of(2026,12,26,14,20), TipoCita.ENTREVISTA_ADOPCION, listaAnimales.get(1), usuarioActual, EstadoCita.PENDIENTE));
+		citas.add(new CitaAgenda("C1", LocalDateTime.of(2026,12,26,14,20), TipoCita.ENTREVISTA_ADOPCION, listaAnimales.get(1), usuarioActual, EstadoCita.PENDIENTE));
 		return citas;
 	}
 	public static void main(String[] args) {
-		Usuario usuarioPrueba = new Usuario();
-		usuarioPrueba.setNombre("Carlos Usuario");
+		Usuario usuarioPrueba = new Usuario(); // más que nada para poder probar la pantalla usuario sin tener que abrir todo el rato el main
+		usuarioPrueba.setNombre("Guille"); 
 		PantallaUsuario ventana = new PantallaUsuario(usuarioPrueba);
 		ventana.setVisible(true);
 	}
+	
 }
