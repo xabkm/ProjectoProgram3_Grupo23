@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -14,8 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -106,7 +107,6 @@ public class PantallaAdministracion extends JFrame {
 	
 	private JPanel crearPanelAnimales() {
 	    JPanel panel = new JPanel(new BorderLayout(5, 10));
-	    panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 	    modeloAnimales = new AnimalTableModel(listaAnimales);
 	    tablaAnimales = new JTable(modeloAnimales);
@@ -170,10 +170,7 @@ public class PantallaAdministracion extends JFrame {
 	    
 	    
 	    JScrollPane scrollTabla = new JScrollPane(tablaAnimales);
-	    JPanel panelTabla = new JPanel(new BorderLayout());
-	    panelTabla.setBorder(BorderFactory.createTitledBorder("Animales"));
-	    panelTabla.add(scrollTabla, BorderLayout.CENTER);
-	    panel.add(panelTabla, BorderLayout.CENTER);
+	    panel.add(scrollTabla, BorderLayout.CENTER);
 
 	    JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	    JButton btnNuevo = new JButton("Nuevo Animal");
@@ -321,7 +318,6 @@ public class PantallaAdministracion extends JFrame {
 		
 		private JPanel crearPanelAdopciones() {
 			JPanel panel = new JPanel(new BorderLayout(5, 10));
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 			modeloSolicitudes = new SolicitudTableModel(listaSolicitudes);
 			tablaSolicitudes = new JTable(modeloSolicitudes);
@@ -368,10 +364,7 @@ public class PantallaAdministracion extends JFrame {
 			});
 
 			JScrollPane scrollTabla = new JScrollPane(tablaSolicitudes);
-			JPanel panelTabla = new JPanel(new BorderLayout());
-			panelTabla.setBorder(BorderFactory.createTitledBorder("Solicitudes"));
-			panelTabla.add(scrollTabla, BorderLayout.CENTER);
-			panel.add(panelTabla, BorderLayout.CENTER);
+			panel.add(scrollTabla, BorderLayout.CENTER);
 
 			JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			JButton btnGestionar = new JButton("Gestionar Estado");
@@ -536,7 +529,7 @@ public class PantallaAdministracion extends JFrame {
 		JScrollPane scrollTabla = new JScrollPane(tablaCitas);
 		panel.add(scrollTabla, BorderLayout.CENTER);
 
-		JPanel panelBotones = new JPanel(new FlowLayout());
+		JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		JButton btnAtender = new JButton("Atender Cita");
 		JButton btnCancelar = new JButton("Cancelar Cita");
 
