@@ -86,6 +86,7 @@ public class PantallaUsuario extends JFrame {
 		tablaAnimales = new JTable(modeloAnimales);
 		tablaAnimales.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaAnimales.setRowHeight(24);
+		
 		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55);
 		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 			
@@ -168,6 +169,28 @@ public class PantallaUsuario extends JFrame {
 		tablaSolicitudes = new JTable(modeloSolicitudes);
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
+		tablaSolicitudes.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+			Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			if (isSelected) {
+				c.setBackground(table.getSelectionBackground());
+				c.setForeground(table.getSelectionForeground());
+			} else if (value instanceof EstadoSolicitud) {
+				c.setForeground(Color.BLACK);
+				String estadoTexto = value.toString().toUpperCase();
+				if (estadoTexto.contains("APROB") || estadoTexto.contains("ACEPT")) {
+					c.setBackground(new Color(215, 245, 220)); // Verde
+				} else if (estadoTexto.contains("RECHAZ") || estadoTexto.contains("DENEG")) {
+					c.setBackground(new Color(255, 215, 215)); // Rojo
+				} else {
+					c.setBackground(new Color(255, 248, 200)); // Amarillo
+				}
+			}
+			return c;
+			}
+			});
 		panelsolicitudes.add(new JScrollPane(tablaSolicitudes), BorderLayout.CENTER);
 		return panelsolicitudes;
 	}
@@ -180,6 +203,11 @@ public class PantallaUsuario extends JFrame {
 		tablaCitas = new JTable(modeloCitas);
 		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaCitas.setRowHeight(24);
+	
+
+		
+		
+		
 		panelcitas.add(new JScrollPane(tablaCitas), BorderLayout.CENTER);
 		return panelcitas;
 	}
