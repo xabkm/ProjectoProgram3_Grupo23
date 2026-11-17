@@ -234,8 +234,86 @@ public class PantallaUsuario extends JFrame {
 		tablaCitas.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaCitas.setRowHeight(24);
 		
+		tablaCitas.getColumnModel().getColumn(2).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
 
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				if (isSelected) {
+					c.setBackground(table.getSelectionBackground());
+					c.setForeground(table.getSelectionForeground());
+				} else if (value instanceof TipoCita) {
+					c.setForeground(Color.BLACK);
+					TipoCita tipo = (TipoCita) value;
+					if (tipo == TipoCita.VETERINARIO) {
+						c.setBackground(new Color(220, 235, 255)); // Azul claro
+					} else if (tipo == TipoCita.ENTREVISTA_ADOPCION) {
+						c.setBackground(new Color(255, 235, 210)); // Naranja claro
+					} else if (tipo == TipoCita.PASEO) {
+						c.setBackground(new Color(215, 245, 220)); // Verde claro
+					} else if (tipo == TipoCita.VISITA_PADRINO) {
+						c.setBackground(new Color(240, 220, 255)); // Morado claro
+					} else {
+						c.setBackground(Color.WHITE); // otro 
+					}
+				}
+				return c;
+			}
+			
+		});
 		
+		tablaCitas.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+				if (isSelected) {
+					c.setBackground(table.getSelectionBackground());
+					c.setForeground(table.getSelectionForeground());
+				} else if (value instanceof EstadoCita) {
+					c.setForeground(Color.BLACK);
+					EstadoCita estado = (EstadoCita) value;
+					if (estado == EstadoCita.ATENDIDA) {
+						c.setBackground(new Color(215, 245, 220)); // Verde claro
+					} else if (estado == EstadoCita.CANCELADA) {
+						c.setBackground(new Color(255, 215, 215)); // Rojo claro
+					} else {
+						c.setBackground(new Color(255, 248, 200)); // Amarillo claro 
+					}
+				}
+				return c;
+			}
+		});
+
+		JPanel panelbotones =new JPanel(new FlowLayout());
+		JButton btnCit = new JButton("Detalles de la Cita");
+		btnCit.setFont(new Font("Arial", Font.BOLD, 14));
+		btnCit.setBackground(Color.black);
+		btnCit.setForeground(Color.WHITE);
+		panelbotones.add(btnCit);
+		
+		JButton botonCancel = new JButton("Cancelar Cita");
+		botonCancel.setFont(new Font("Arial", Font.BOLD, 14));
+		botonCancel.setBackground(Color.black);
+		botonCancel.setForeground(Color.WHITE);
+		panelbotones.add(botonCancel);
+		
+		panelcitas.add(panelbotones,BorderLayout.SOUTH); 
+		botonCancel.addActionListener(e-> cancelarCita());
+		btnCit.addActionListener(e ->{
+			int fila = tablaCitas.getSelectedRow();
+			CitaAgenda selec = misCitas.get(fila);
+			if(fila != -1) {
+				JOptionPane.showMessageDialog(this, "Acude a tu cita en la sede de la asociación 10 minutos antes del "+selec.getFechaHora()+" para la "+selec.getTipoCita() +".\nNo olvides traer tu DNI.", "Información", JOptionPane.INFORMATION_MESSAGE);
+			} 
+
+		});
 		
 		JScrollPane scroll = new JScrollPane(tablaCitas);
 		JPanel panelTablaCit = new JPanel(new BorderLayout());
@@ -243,7 +321,29 @@ public class PantallaUsuario extends JFrame {
 		panelTablaCit.add(scroll, BorderLayout.CENTER);
 		panelcitas.add(panelTablaCit, BorderLayout.CENTER);
 		
+		
 		return panelcitas;
+	}
+	
+	
+	private void cancelarCita() {
+		int fila = tablaCitas.getSelectedRow();
+		if (fila == -1) { // si no se selecciona animal se avisa que hay que seleccionar uno
+			JOptionPane.showMessageDialog(this, "Selecciona una cita de la lista para cancelarla.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		CitaAgenda seleccionado = misCitas.get(fila);
+		
+		int pregunta = JOptionPane.showConfirmDialog(this, // pedimos confirmación por si acaso
+				"¿Deseas cancelar la cita del día"+seleccionado.getFechaHora() +" para " + seleccionado.getTipoCita() + "?",
+				"Confirmar solicitud", JOptionPane.YES_NO_OPTION);
+		if (pregunta == JOptionPane.YES_OPTION) {
+			seleccionado.setEstado(EstadoCita.CANCELADA);
+		
+			
+			modeloCitas.fireTableDataChanged(); // actualizamos la información
+			JOptionPane.showMessageDialog(this, "Cita cancelada.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	
 	private List<Animal> cargarAnimalesPrueba() {
