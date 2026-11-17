@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 
 import es.deusto.ingenieria.g23.domain.Animal;
 import es.deusto.ingenieria.g23.domain.Especie;
@@ -37,6 +38,7 @@ public class PantallaDetalleAnimal extends JFrame {
     private JLabel lblFoto;
     private JLabel lblNumeroFoto;
     private int fotoActual = 0;
+    private boolean ejecutandoCarrusel = true;
 
     public PantallaDetalleAnimal(Animal animal, JFrame ventanaCatalogo) {
         this.animal = animal;
@@ -67,22 +69,26 @@ public class PantallaDetalleAnimal extends JFrame {
         JPanel panelCentro = new JPanel(new GridLayout(1, 2, 15, 15));
         panelCentro.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        // Columna izquierda para las fotos
+        // Columna izquierda para las fotos(Antes de meter un thread en vez de botones)
         JPanel panelIzquierdo = new JPanel(new BorderLayout());
         panelIzquierdo.setBorder(BorderFactory.createTitledBorder("Fotos"));
 
         lblFoto = new JLabel("Sin foto", SwingConstants.CENTER);
         panelIzquierdo.add(lblFoto, BorderLayout.CENTER);
 
-        JPanel panelBotonesFoto = new JPanel(new FlowLayout());
-        JButton btnFotoAnterior = new JButton("<");
-        lblNumeroFoto = new JLabel("0 / 0");
-        JButton btnFotoSiguiente = new JButton(">");
-
-        panelBotonesFoto.add(btnFotoAnterior);
-        panelBotonesFoto.add(lblNumeroFoto);
-        panelBotonesFoto.add(btnFotoSiguiente);
-        panelIzquierdo.add(panelBotonesFoto, BorderLayout.SOUTH);
+//        JPanel panelBotonesFoto = new JPanel(new FlowLayout());
+//        JButton btnFotoAnterior = new JButton("<");
+//        lblNumeroFoto = new JLabel("0 / 0");
+//        JButton btnFotoSiguiente = new JButton(">");
+//
+//        panelBotonesFoto.add(btnFotoAnterior);
+//        panelBotonesFoto.add(lblNumeroFoto);
+//        panelBotonesFoto.add(btnFotoSiguiente);
+//        panelIzquierdo.add(panelBotonesFoto, BorderLayout.SOUTH);
+         JPanel panelContador = new JPanel(new FlowLayout());
+         lblNumeroFoto = new JLabel("0 / 0");
+         panelContador.add(lblNumeroFoto);
+         panelIzquierdo.add(panelContador, BorderLayout.SOUTH);
 
         // Columna derecha para la informacion del animal
         JPanel panelDerecho = new JPanel(new BorderLayout(5, 10));
@@ -147,11 +153,12 @@ public class PantallaDetalleAnimal extends JFrame {
 
         // Mostrar la primera foto al iniciar
         mostrarFoto();
-
+        iniciarCarruselFotos();
         // Evento boton Atras
         btnAtras.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	ejecutandoCarrusel = false;
                 if (ventanaCatalogo != null) {
                     ventanaCatalogo.setVisible(true);
                 }
@@ -160,42 +167,85 @@ public class PantallaDetalleAnimal extends JFrame {
         });
 
         // Evento foto anterior
-        btnFotoAnterior.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (animal.getRutasFotos() != null && !animal.getRutasFotos().isEmpty()) {
-                    fotoActual--;
-                    if (fotoActual < 0) {
-                        fotoActual = animal.getRutasFotos().size() - 1;
-                    }
-                    mostrarFoto();
-                }
-            }
-        });
-
-        // Evento foto siguiente
-        btnFotoSiguiente.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (animal.getRutasFotos() != null && !animal.getRutasFotos().isEmpty()) {
-                    fotoActual++;
-                    if (fotoActual >= animal.getRutasFotos().size()) {
-                        fotoActual = 0;
-                    }
-                    mostrarFoto();
-                }
-            }
-        });
+//        btnFotoAnterior.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if (animal.getRutasFotos() != null && !animal.getRutasFotos().isEmpty()) {
+//                    fotoActual--;
+//                    if (fotoActual < 0) {
+//                        fotoActual = animal.getRutasFotos().size() - 1;
+//                    }
+//                    mostrarFoto();
+//                }
+//            }
+//        });
+//
+//        // Evento foto siguiente
+//        btnFotoSiguiente.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if (animal.getRutasFotos() != null && !animal.getRutasFotos().isEmpty()) {
+//                    fotoActual++;
+//                    if (fotoActual >= animal.getRutasFotos().size()) {
+//                        fotoActual = 0;
+//                    }
+//                    mostrarFoto();
+//                }
+//            }
+//        });
 
         // Evento boton Ir a adoptar
         btnAdoptar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	 ejecutandoCarrusel = false;
             	 PantallaFormulario.main(null);
             }
         });
     }
 
+ // Hilo que pasa las fotos automaticamente cada 3 segundos
+    private void iniciarCarruselFotos() {
+        List<String> fotos = animal.getRutasFotos();
+
+        // Solo arrancamos el hilo si hay mas de 1 foto
+        if (fotos == null || fotos.size() <= 1) {
+            return;
+        }
+
+        Thread hiloFotos = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (ejecutandoCarrusel) {
+                    try {
+                        // Espera 3 segundos (3000 milisegundos)
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
+
+                    // Si la ventana sigue abierta, pasamos a la siguiente foto
+                    if (ejecutandoCarrusel) {
+                        fotoActual++;
+                        if (fotoActual >= fotos.size()) {
+                            fotoActual = 0;
+                        }
+
+                        // Actualizamos el JLabel de forma segura en Swing
+                        SwingUtilities.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                mostrarFoto();
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        hiloFotos.start();
+    }
+    
     // Carga y escala la foto actual en el JLabel
     private void mostrarFoto() {
         List<String> fotos = animal.getRutasFotos();
