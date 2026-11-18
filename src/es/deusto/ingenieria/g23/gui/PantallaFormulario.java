@@ -1,6 +1,7 @@
 package es.deusto.ingenieria.g23.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -62,6 +63,26 @@ public class PantallaFormulario extends JFrame{
 		// Crea una nueva persona y solicitud de adopcion con ella
 		finalizar.addMouseListener(new MouseAdapter() {			
 			public void mouseClicked(MouseEvent e) {				
+				
+				if(campoNombre.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El nombre es obligatorio"); return;
+				}
+				
+				if(campoApellidos.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(panelPrincipal,"Los apellidos son obligatorios"); return;
+				}
+				
+				if(campoDni.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El DNI es obligatorio"); return;
+				}
+				
+				if(campoEmail.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El email es obligatorio"); return;
+				}
+				if(campoTlf.getText().isEmpty()) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El telefono es obligatorio"); return;
+				}
+				
 				Persona persona = new Persona();
 				persona.setNombre(campoNombre.getText());
 				persona.setApellidos(campoApellidos.getText());
@@ -69,10 +90,15 @@ public class PantallaFormulario extends JFrame{
 				persona.setEmail(campoEmail.getText());
 				persona.setTelefono(campoTlf.getText());
 				
+				
 				SolicitudAdopcion solicitud = new SolicitudAdopcion();
 				solicitud.setSolicitante(persona);
 				solicitud.setFechaSolicitud(LocalDateTime.now());
 				solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+				
+				JOptionPane.showMessageDialog(panelPrincipal, "La solicitud ha sido confirmada.\nFecha: " + solicitud.getFechaSolicitud().toLocalDate() + "\nDNI: " + persona.getDni());
+				
+				panelPrincipal.dispose();
 				
 			}
 		});
@@ -93,6 +119,8 @@ public class PantallaFormulario extends JFrame{
 		// FlowLayout.LEFT alinea a la izquierda y deja 10px de espacio entre el JLabel y el JTextField
 		JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
 	    JLabel lbl = new JLabel(texto);
+	    
+	    lbl.setPreferredSize(new Dimension(85, 20));
 	    
 	    fila.add(lbl);
 	    fila.add(campoTexto);
