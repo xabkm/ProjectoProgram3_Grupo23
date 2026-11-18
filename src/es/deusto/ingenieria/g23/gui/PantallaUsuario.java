@@ -308,10 +308,13 @@ public class PantallaUsuario extends JFrame {
 		botonCancel.addActionListener(e-> cancelarCita());
 		btnCit.addActionListener(e ->{
 			int fila = tablaCitas.getSelectedRow();
-			CitaAgenda selec = misCitas.get(fila);
+			
 			if(fila != -1) {
+				CitaAgenda selec = misCitas.get(fila);
 				JOptionPane.showMessageDialog(this, "Acude a tu cita en la sede de la asociación 10 minutos antes del "+selec.getFechaHora()+" para la "+selec.getTipoCita() +".\nNo olvides traer tu DNI.", "Información", JOptionPane.INFORMATION_MESSAGE);
-			} 
+			} else {
+				JOptionPane.showMessageDialog(this, "Selecciona una cita de la lista para ver los detalles.", "Aviso", JOptionPane.WARNING_MESSAGE);
+			}
 
 		});
 		
