@@ -105,7 +105,6 @@ public class PantallaAdministracion extends JFrame {
 	
 	private JPanel crearPanelAnimales() {
 	    JPanel panel = new JPanel(new BorderLayout(5, 10));
-	    panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 	    modeloAnimales = new AnimalTableModel(listaAnimales);
 	    tablaAnimales = new JTable(modeloAnimales);
@@ -169,10 +168,7 @@ public class PantallaAdministracion extends JFrame {
 	    
 	    
 	    JScrollPane scrollTabla = new JScrollPane(tablaAnimales);
-	    JPanel panelTabla = new JPanel(new BorderLayout());
-	    panelTabla.setBorder(BorderFactory.createTitledBorder("Animales"));
-	    panelTabla.add(scrollTabla, BorderLayout.CENTER);
-	    panel.add(panelTabla, BorderLayout.CENTER);
+	    panel.add(scrollTabla, BorderLayout.CENTER);
 
 	    JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 	    JButton btnNuevo = new JButton("Nuevo Animal");
@@ -300,7 +296,6 @@ public class PantallaAdministracion extends JFrame {
 		
 		private JPanel crearPanelAdopciones() {
 			JPanel panel = new JPanel(new BorderLayout(5, 10));
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
 			modeloSolicitudes = new SolicitudTableModel(listaSolicitudes);
 			tablaSolicitudes = new JTable(modeloSolicitudes);
@@ -347,10 +342,7 @@ public class PantallaAdministracion extends JFrame {
 			});
 
 			JScrollPane scrollTabla = new JScrollPane(tablaSolicitudes);
-			JPanel panelTabla = new JPanel(new BorderLayout());
-			panelTabla.setBorder(BorderFactory.createTitledBorder("Solicitudes"));
-			panelTabla.add(scrollTabla, BorderLayout.CENTER);
-			panel.add(panelTabla, BorderLayout.CENTER);
+			panel.add(scrollTabla, BorderLayout.CENTER);
 
 			JPanel panelBotones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 			JButton btnGestionar = new JButton("Gestionar Estado");
