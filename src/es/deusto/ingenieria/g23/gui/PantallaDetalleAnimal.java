@@ -200,7 +200,8 @@ public class PantallaDetalleAnimal extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
             	 ejecutandoCarrusel = false;
-            	 PantallaFormulario.main(null);
+            	 PantallaFormulario formulario = new PantallaFormulario(animal);
+            	 formulario.setVisible(true);
             }
         });
     }
