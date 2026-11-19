@@ -198,6 +198,7 @@ public class PantallaCatalogo extends JFrame {
 		contenedor.add(panelCentro, BorderLayout.NORTH);
 		JScrollPane scrollCentro = new JScrollPane(contenedor);	
 		scrollCentro.setBorder(BorderFactory.createEmptyBorder());
+		scrollCentro.getVerticalScrollBar().setUnitIncrement(20); // aumentarle la velocidad al scroll
 		add(panelNorte, BorderLayout.NORTH);
 		add(panelFiltros, BorderLayout.WEST);
 		add(scrollCentro, BorderLayout.CENTER);
