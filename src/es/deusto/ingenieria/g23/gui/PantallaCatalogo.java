@@ -54,6 +54,9 @@ public class PantallaCatalogo extends JFrame {
 		setSize(950, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLocationRelativeTo(null);
+		// logo de la empresa:
+		ImageIcon logoSinEscalar = new ImageIcon("resources/images/logo.jpg");
+		setIconImage(logoSinEscalar.getImage());
 		
 		// cabecera
 		setLayout(new BorderLayout());
@@ -71,7 +74,7 @@ public class PantallaCatalogo extends JFrame {
 		btnBuscar.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
 
 		
-		panelIzq = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelIzq = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 12));
 		JLabel lblNombre = new JLabel("Nombre:");
 		lblNombre.setFont(new Font("Arial", Font.BOLD, 15));
 		panelIzq.add(lblNombre);
@@ -100,8 +103,33 @@ public class PantallaCatalogo extends JFrame {
 			}
 			
 		});
-		panelNorte.add(btnPerfil, BorderLayout.EAST);
-		panelNorte.add(panelIzq, BorderLayout.WEST);
+		
+		// boton quienes somos
+		JButton btnQuienes = new JButton("Quiénes somos");
+		btnQuienes.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnQuienes.setOpaque(true);
+		btnQuienes.setForeground(Color.ORANGE.darker());
+		btnQuienes.setBackground(Color.WHITE);
+		btnQuienes.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(Color.ORANGE.darker(), 2), BorderFactory.createEmptyBorder(7, 14, 7, 14)));
+		btnQuienes.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnQuienes.setContentAreaFilled(false);
+		btnQuienes.addActionListener(e -> new PantallaQuienesSomos(this).setVisible(true));
+		
+		// logo y título de la aplicación (se hace lo mismo que con la foto de perfil)
+		Image logoEsc = logoSinEscalar.getImage().getScaledInstance(60, 52, Image.SCALE_SMOOTH);
+		JLabel lblTitulo = new JLabel("Planeta Animal", new ImageIcon(logoEsc), JLabel.LEFT);
+		lblTitulo.setIconTextGap(12);
+		JPanel panelCuenta = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 9));
+		panelCuenta.setBackground(Color.WHITE);
+		panelCuenta.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+		panelCuenta.add(btnQuienes);
+		panelCuenta.add(btnPerfil);
+		lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 20));
+		
+		panelNorte.add(panelCuenta, BorderLayout.EAST);
+		panelNorte.add(lblTitulo, BorderLayout.WEST);
+		panelNorte.add(panelIzq, BorderLayout.CENTER);
 		
 		
 		
@@ -169,6 +197,8 @@ public class PantallaCatalogo extends JFrame {
 		contenedor.setBackground(Color.WHITE);
 		contenedor.add(panelCentro, BorderLayout.NORTH);
 		JScrollPane scrollCentro = new JScrollPane(contenedor);	
+		scrollCentro.setBorder(BorderFactory.createEmptyBorder());
+		scrollCentro.getVerticalScrollBar().setUnitIncrement(20); // aumentarle la velocidad al scroll
 		add(panelNorte, BorderLayout.NORTH);
 		add(panelFiltros, BorderLayout.WEST);
 		add(scrollCentro, BorderLayout.CENTER);
@@ -197,7 +227,17 @@ public class PantallaCatalogo extends JFrame {
 			}
 			
 		});
-		
+		// para filtrar al momento sin darle al boton de buscar
+		for (JCheckBox chk : checksEspecie.values()) {
+			chk.addActionListener(e -> mostrarAnimales());
+		}
+		chkDisponibles.addActionListener(e -> mostrarAnimales());
+		txtBuscar.addKeyListener(new java.awt.event.KeyAdapter() {
+			@Override
+			public void keyReleased(java.awt.event.KeyEvent e) {
+				mostrarAnimales();
+			}
+		});
 		
 		animales = PantallaAdministracion.cargarAnimalesPrueba();
 		mostrarAnimales();
@@ -205,23 +245,34 @@ public class PantallaCatalogo extends JFrame {
 	
 	// abrir el panel de administracion:
 	private void abrirCuenta() {
+		JTextField txtUsuario = new JTextField(15);
+		javax.swing.JPasswordField txtClave = new javax.swing.JPasswordField(15);
+		JPanel formulario = new JPanel(new GridLayout(0, 1, 5, 5));
+		formulario.add(new JLabel("Usuario:"));
+		formulario.add(txtUsuario);
+		formulario.add(new JLabel("Contraseña:"));
+		formulario.add(txtClave);
 		
 		int opcion = JOptionPane.showConfirmDialog(this,
-				"¿Quieres abrir el panel de usuario?",
-				"Cuenta usuario", JOptionPane.YES_NO_OPTION);
+				formulario,
+				"Iniciar Sesion", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-		if (opcion == JOptionPane.YES_OPTION) {
+		if (opcion != JOptionPane.OK_OPTION) {
+			return;
+		} 
+		String nombre = txtUsuario.getText().trim();
+		String clave = new String(txtClave.getPassword());
+
+		if (nombre.equals("usuario") && clave.equals("1234")) {        // PARA ACCEDER AL PANEL USUARIO NOMBRE = usuario, CONTRASEÑA = 1234
 			Usuario usuario = new Usuario("00000000T", "usuario", "", "usuario@refugio", "Adolf");
 			new PantallaUsuario(usuario).setVisible(true);
+		} else if (nombre.equals("admin") && clave.equals("1234")) {	 // PARA ACCEDER AL PANEL USUARIO NOMBRE = admin, CONTRASEÑA = 1234
+			Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
+			new PantallaAdministracion(admin).setVisible(true);
 		} else {
-			int elegir = JOptionPane.showConfirmDialog(this, "¿Quieres abrir el panel de administración?",
-					"Cuenta admin", JOptionPane.YES_NO_OPTION);
-			if (elegir == JOptionPane.YES_OPTION) {
-				Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
-				new PantallaAdministracion(admin).setVisible(true);
-			}
-			
+			JOptionPane.showMessageDialog(this, "Usuario o contraseña incorrectos", "Error", JOptionPane.ERROR_MESSAGE);
 		}
+		
 	}
 	
 	private void abrirDetalle(Animal animal) {
@@ -254,15 +305,17 @@ public class PantallaCatalogo extends JFrame {
 			tarjeta.setPreferredSize(new Dimension(200, 235));
 			tarjeta.setOpaque(true);
 			tarjeta.setBackground(Color.WHITE);
-			tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 1));
-			
+			tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
+			tarjeta.setCursor(new Cursor(Cursor.HAND_CURSOR));
 			tarjeta.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					tarjeta.setBackground(Color.ORANGE.darker());
+					tarjeta.setBackground(new Color(255, 244, 225));
+					tarjeta.setBorder(BorderFactory.createLineBorder(Color.ORANGE.darker(), 2));
 				}
 				public void mouseExited(MouseEvent e) {
 					tarjeta.setBackground(Color.WHITE);
+					tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
 				}
 				public void mouseClicked(MouseEvent e) {
 					abrirDetalle(a);
@@ -308,7 +361,7 @@ public class PantallaCatalogo extends JFrame {
 							colorEstado = new Color(170, 50, 50);
 						}
 						
-			JLabel lblEstado = new JLabel(textoEstado);
+			JLabel lblEstado = new JLabel("● "+ textoEstado);
 			lblEstado.setFont(new Font("SansSerif", Font.BOLD, 12));
 			lblEstado.setForeground(colorEstado);
 
@@ -321,6 +374,10 @@ public class PantallaCatalogo extends JFrame {
 
 			panelCentro.add(tarjeta);
 		}
+		// si no queda ningún animal, avisamos
+				if (panelCentro.getComponentCount() == 0) {
+					panelCentro.add(new JLabel("No hay animales que cumplan la búsqueda"));
+				}
 		// refrescar el panel: 
 		panelCentro.revalidate();
 		panelCentro.repaint();

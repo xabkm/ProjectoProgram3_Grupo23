@@ -1,6 +1,7 @@
 package es.deusto.ingenieria.g23.gui;
 
 import java.awt.BorderLayout;
+import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -190,46 +191,116 @@ public class PantallaAdministracion extends JFrame {
 	 		btnEliminar.addActionListener(e -> eliminarAnimal());
 	    return panel;
 	}
-	//  formulario con JOptionPane para dar de alta un nuevo animal
-		private void nuevoAnimal() {
-			JTextField txtId = new JTextField();
-			JTextField txtNombre = new JTextField();
-			JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
-			JTextField txtRaza = new JTextField();
-			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
+	// Formulario con JOptionPane para dar de alta un nuevo animal
+	private void nuevoAnimal() {
+		String idGenerado = Animal.generarSiguienteId(listaAnimales);
+		JTextField txtId = new JTextField(idGenerado);
+		txtId.setEditable(false);
+		txtId.setEnabled(false);
 
-			JComponent[] campos = new JComponent[] {
-				new JLabel("ID del Animal:"), txtId,
-				new JLabel("Nombre:"), txtNombre,
-				new JLabel("Especie:"), comboEspecie,
-				new JLabel("Raza:"), txtRaza,
-				new JLabel("Estado:"), comboEstado
-			};
+		JTextField txtNombre = new JTextField();
+		JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
+		JTextField txtRaza = new JTextField();
+		JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 
-			int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		
 
-			if (opcion == JOptionPane.OK_OPTION) {
-				if (txtId.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
-					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				
-				Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
-				EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
-				Animal nuevo = new Animal(
-					txtId.getText().trim(),
-					txtNombre.getText().trim(),
-					especieSeleccionada,
-					txtRaza.getText().trim(),
-					LocalDate.now(),
-					estadoSeleccionado
-				);
+		JTextArea txtDescripcion = new JTextArea(3, 20);
+		txtDescripcion.setLineWrap(true);
+		txtDescripcion.setWrapStyleWord(true);
+		JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
 
-				listaAnimales.add(nuevo);
-				modeloAnimales.fireTableDataChanged();
+		final java.io.File[] fotoSeleccionada = new java.io.File[1];
+		JTextField txtRutaFoto = new JTextField();
+		txtRutaFoto.setEditable(false);
+		JButton btnElegirFoto = new JButton("Seleccionar foto...");
+		btnElegirFoto.addActionListener(e -> {
+			javax.swing.JFileChooser chooser = new javax.swing.JFileChooser("resources/images");
+			chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+					"Imágenes (png, jpg, jpeg, gif)", "png", "jpg", "jpeg", "gif"));
+			if (chooser.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+				fotoSeleccionada[0] = chooser.getSelectedFile();
+				txtRutaFoto.setText(fotoSeleccionada[0].getName());
 			}
+		});
+
+		JPanel panelFoto = new JPanel(new BorderLayout(5, 0));
+		panelFoto.add(txtRutaFoto, BorderLayout.CENTER);
+		panelFoto.add(btnElegirFoto, BorderLayout.EAST);
+
+		JComponent[] campos = new JComponent[] {
+			new JLabel("ID del Animal (automático):"), txtId,
+			new JLabel("Nombre:"), txtNombre,
+			new JLabel("Especie:"), comboEspecie,
+			new JLabel("Raza:"), txtRaza,
+			new JLabel("Estado:"), comboEstado,
+			new JLabel("Descripción:"), scrollDescripcion,
+			new JLabel("Foto principal:"), panelFoto
+		};
+
+		int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+		if (opcion == JOptionPane.OK_OPTION) {
+			if (txtNombre.getText().trim().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "El Nombre es obligatorio", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
+				return;
+			}
+
+			String idFinal = Animal.generarSiguienteId(listaAnimales);
+			Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
+			EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
+
+			Animal nuevo = new Animal(
+				idFinal,
+				txtNombre.getText().trim(),
+				especieSeleccionada,
+				txtRaza.getText().trim(),
+				LocalDate.now(),
+				estadoSeleccionado
+			);
+
+			String descTexto = txtDescripcion.getText().trim();
+			if (!descTexto.isEmpty()) {
+				nuevo.setDescripcion(descTexto);
+			}
+
+			if (fotoSeleccionada[0] != null && fotoSeleccionada[0].exists()) {
+				guardarFotoConCodigo(fotoSeleccionada[0], idFinal);
+			}
+
+			nuevo.cargarFotosAutomaticamente(); // carga la foto guardada y cualquier otra con su código en resources/images
+
+			listaAnimales.add(nuevo);
+			modeloAnimales.fireTableDataChanged();
 		}
+	}
+
+	private void guardarFotoConCodigo(java.io.File origen, String codigoAnimal) {
+		String nombreOrig = origen.getName();
+		int punto = nombreOrig.lastIndexOf('.');
+		String ext = (punto >= 0) ? nombreOrig.substring(punto).toLowerCase() : ".png";
+
+		java.io.File carpeta = new java.io.File("resources/images");
+		if (!carpeta.exists()) {
+			carpeta.mkdirs();
+		}
+
+		java.io.File destino = new java.io.File(carpeta, codigoAnimal + ext);
+		try {
+			java.nio.file.Files.copy(
+					origen.toPath(),
+					destino.toPath(),
+					java.nio.file.StandardCopyOption.REPLACE_EXISTING
+			);
+		} catch (java.io.IOException ex) {
+			JOptionPane.showMessageDialog(
+					this,
+					"No se ha podido copiar la foto: " + ex.getMessage(),
+					"Aviso",
+					JOptionPane.WARNING_MESSAGE
+			);
+		}
+	}
 
 		//  modificar los datos del animal seleccionado en la tabla
 		private void editarAnimal() {
@@ -558,7 +629,16 @@ public class PantallaAdministracion extends JFrame {
         List<String> fotosPruebaKivi = new ArrayList<>();
         fotosPruebaKivi.add("resources/images/A004.png");
         fotosPruebaKivi.add("resources/images/A0041.png");
-       
+        List<String> fotosPruebaCoco = new ArrayList<>();
+        fotosPruebaCoco.add("resources/images/A005.png");
+        fotosPruebaCoco.add("resources/images/A0051.png");
+        List<String> fotosPruebaAnubis = new ArrayList<>();
+        fotosPruebaAnubis.add("resources/images/A006.png");
+        fotosPruebaAnubis.add("resources/images/A0061.png");
+        List<String> fotosPruebaTito = new ArrayList<>();
+        fotosPruebaTito.add("resources/images/A007.png");
+        fotosPruebaTito.add("resources/images/A0071.png");
+
 	        
 	    List<Animal> mocks = new ArrayList<>();
 
@@ -566,6 +646,9 @@ public class PantallaAdministracion extends JFrame {
 	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA, "Es una gata que trepa muy bien",false, true,fotosPruebaLuna));
 	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO,"Es un perro jugueton",true,false,fotosPruebaMax));
 	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO,"Le encanta correr pero se cansa rápido",false, false,fotosPruebaKivi ));
+	    mocks.add(new Animal("A005", "Coco", Especie.LORO, "Guacamayo", LocalDate.of(2007, 6, 8), EstadoAnimal.DISPONIBLE, "Le gusta cantar Rosalia", false, true, fotosPruebaCoco));
+	    mocks.add(new Animal("A006", "Anubis", Especie.GATO, "Sphynx", LocalDate.of(2018, 9, 8), EstadoAnimal.DISPONIBLE, "Es un gato muy cariñoso. Además no suelta pelos", true, true, fotosPruebaAnubis));
+	    mocks.add(new Animal("A007", "Tito", Especie.LORO, "Cacatúa", LocalDate.of(2010, 6, 21), EstadoAnimal.DISPONIBLE, "Es un loro muy inteligente y expresivo", false, false, fotosPruebaTito));
 
 	    return mocks;
 	}
