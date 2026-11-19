@@ -74,7 +74,7 @@ public class PantallaCatalogo extends JFrame {
 		btnBuscar.setBorder(BorderFactory.createEmptyBorder(6, 16, 6, 16));
 
 		
-		panelIzq = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		panelIzq = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 12));
 		JLabel lblNombre = new JLabel("Nombre:");
 		lblNombre.setFont(new Font("Arial", Font.BOLD, 15));
 		panelIzq.add(lblNombre);
@@ -309,12 +309,12 @@ public class PantallaCatalogo extends JFrame {
 			tarjeta.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e) {
-					tarjeta.setBackground(Color.ORANGE.darker());
-					
+					tarjeta.setBackground(new Color(255, 244, 225));
+					tarjeta.setBorder(BorderFactory.createLineBorder(Color.ORANGE.darker(), 2));
 				}
 				public void mouseExited(MouseEvent e) {
 					tarjeta.setBackground(Color.WHITE);
-					
+					tarjeta.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY, 2));
 				}
 				public void mouseClicked(MouseEvent e) {
 					abrirDetalle(a);
@@ -360,7 +360,7 @@ public class PantallaCatalogo extends JFrame {
 							colorEstado = new Color(170, 50, 50);
 						}
 						
-			JLabel lblEstado = new JLabel(textoEstado);
+			JLabel lblEstado = new JLabel("● "+ textoEstado);
 			lblEstado.setFont(new Font("SansSerif", Font.BOLD, 12));
 			lblEstado.setForeground(colorEstado);
 
