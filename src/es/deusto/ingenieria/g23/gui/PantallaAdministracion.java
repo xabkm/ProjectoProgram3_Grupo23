@@ -561,7 +561,13 @@ public class PantallaAdministracion extends JFrame {
         List<String> fotosPruebaCoco = new ArrayList<>();
         fotosPruebaCoco.add("resources/images/A005.png");
         fotosPruebaCoco.add("resources/images/A0051.png");
-        
+        List<String> fotosPruebaAnubis = new ArrayList<>();
+        fotosPruebaAnubis.add("resources/images/A006.png");
+        fotosPruebaAnubis.add("resources/images/A0061.png");
+        List<String> fotosPruebaTito = new ArrayList<>();
+        fotosPruebaTito.add("resources/images/A007.png");
+        fotosPruebaTito.add("resources/images/A0071.png");
+
 	        
 	    List<Animal> mocks = new ArrayList<>();
 
@@ -570,7 +576,9 @@ public class PantallaAdministracion extends JFrame {
 	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO,"Es un perro jugueton",true,false,fotosPruebaMax));
 	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO,"Le encanta correr pero se cansa rápido",false, false,fotosPruebaKivi ));
 	    mocks.add(new Animal("A005", "Coco", Especie.LORO, "Guacamayo", LocalDate.of(2007, 6, 8), EstadoAnimal.DISPONIBLE, "Le gusta cantar Rosalia", false, true, fotosPruebaCoco));
-	    
+	    mocks.add(new Animal("A006", "Anubis", Especie.GATO, "Sphynx", LocalDate.of(2018, 9, 8), EstadoAnimal.DISPONIBLE, "Es un gato muy cariñoso. Además no suelta pelos", true, true, fotosPruebaAnubis));
+	    mocks.add(new Animal("A007", "Tito", Especie.LORO, "Cacatúas", LocalDate.of(2010, 6, 21), EstadoAnimal.DISPONIBLE, "Es un loro muy inteligente y expresivo", false, false, fotosPruebaTito));
+
 	    return mocks;
 	}
  
