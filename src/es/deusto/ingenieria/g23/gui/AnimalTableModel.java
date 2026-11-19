@@ -7,7 +7,7 @@ import es.deusto.ingenieria.g23.domain.Animal;
 public class AnimalTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
-	private static final String[] COLUMNAS = {"ID", "Nombre", "Especie", "Raza", "Estado"};
+	private static final String[] COLUMNAS = {"ID", "Nombre", "Especie", "Raza", "Estado","Boton"};
 	private List<Animal> animales;
 	
 	public AnimalTableModel(List<Animal> animales) {
@@ -34,6 +34,7 @@ public class AnimalTableModel extends AbstractTableModel {
 			case 2 -> animal.getEspecie();
 			case 3 -> animal.getRaza();
 			case 4 -> animal.getEstado();
+			case 5 -> animal;
 			default -> null;
 		};
 	}
