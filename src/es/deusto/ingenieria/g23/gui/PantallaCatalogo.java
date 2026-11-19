@@ -104,12 +104,26 @@ public class PantallaCatalogo extends JFrame {
 			
 		});
 		
+		// boton quienes somos
+		JButton btnQuienes = new JButton("Quiénes somos");
+		btnQuienes.setFont(new Font("SansSerif", Font.BOLD, 13));
+		btnQuienes.setOpaque(true);
+		btnQuienes.setForeground(Color.ORANGE.darker());
+		btnQuienes.setBackground(Color.WHITE);
+		btnQuienes.setBorder(BorderFactory.createCompoundBorder(
+				BorderFactory.createLineBorder(Color.ORANGE.darker(), 2), BorderFactory.createEmptyBorder(7, 14, 7, 14)));
+		btnQuienes.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		btnQuienes.setContentAreaFilled(false);
+		btnQuienes.addActionListener(e -> new PantallaQuienesSomos(this).setVisible(true));
+		
 		// logo y título de la aplicación (se hace lo mismo que con la foto de perfil)
 		Image logoEsc = logoSinEscalar.getImage().getScaledInstance(60, 52, Image.SCALE_SMOOTH);
 		JLabel lblTitulo = new JLabel("Planeta Animal", new ImageIcon(logoEsc), JLabel.LEFT);
 		lblTitulo.setIconTextGap(12);
 		JPanel panelCuenta = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 9));
 		panelCuenta.setBackground(Color.WHITE);
+		panelCuenta.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+		panelCuenta.add(btnQuienes);
 		panelCuenta.add(btnPerfil);
 		lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 20));
 		
