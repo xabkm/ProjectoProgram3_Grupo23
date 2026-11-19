@@ -1,6 +1,7 @@
 package es.deusto.ingenieria.g23.gui;
 
 import java.awt.BorderLayout;
+import javax.swing.JTextArea;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
@@ -202,12 +203,39 @@ public class PantallaAdministracion extends JFrame {
 		JTextField txtRaza = new JTextField();
 		JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 
+		
+
+		JTextArea txtDescripcion = new JTextArea(3, 20);
+		txtDescripcion.setLineWrap(true);
+		txtDescripcion.setWrapStyleWord(true);
+		JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
+
+		final java.io.File[] fotoSeleccionada = new java.io.File[1];
+		JTextField txtRutaFoto = new JTextField();
+		txtRutaFoto.setEditable(false);
+		JButton btnElegirFoto = new JButton("Seleccionar foto...");
+		btnElegirFoto.addActionListener(e -> {
+			javax.swing.JFileChooser chooser = new javax.swing.JFileChooser("resources/images");
+			chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter(
+					"Imágenes (png, jpg, jpeg, gif)", "png", "jpg", "jpeg", "gif"));
+			if (chooser.showOpenDialog(this) == javax.swing.JFileChooser.APPROVE_OPTION) {
+				fotoSeleccionada[0] = chooser.getSelectedFile();
+				txtRutaFoto.setText(fotoSeleccionada[0].getName());
+			}
+		});
+
+		JPanel panelFoto = new JPanel(new BorderLayout(5, 0));
+		panelFoto.add(txtRutaFoto, BorderLayout.CENTER);
+		panelFoto.add(btnElegirFoto, BorderLayout.EAST);
+
 		JComponent[] campos = new JComponent[] {
 			new JLabel("ID del Animal (automático):"), txtId,
 			new JLabel("Nombre:"), txtNombre,
 			new JLabel("Especie:"), comboEspecie,
 			new JLabel("Raza:"), txtRaza,
-			new JLabel("Estado:"), comboEstado
+			new JLabel("Estado:"), comboEstado,
+			new JLabel("Descripción:"), scrollDescripcion,
+			new JLabel("Foto principal:"), panelFoto
 		};
 
 		int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
@@ -218,11 +246,10 @@ public class PantallaAdministracion extends JFrame {
 				return;
 			}
 
-			// Se vuelve a calcular al confirmar por si cambió la lista y se asegura el formato
 			String idFinal = Animal.generarSiguienteId(listaAnimales);
-
 			Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
 			EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
+
 			Animal nuevo = new Animal(
 				idFinal,
 				txtNombre.getText().trim(),
@@ -231,10 +258,47 @@ public class PantallaAdministracion extends JFrame {
 				LocalDate.now(),
 				estadoSeleccionado
 			);
-			nuevo.cargarFotosAutomaticamente(); // si ya hay fotos con su código en resources/images, las coge solas
+
+			String descTexto = txtDescripcion.getText().trim();
+			if (!descTexto.isEmpty()) {
+				nuevo.setDescripcion(descTexto);
+			}
+
+			if (fotoSeleccionada[0] != null && fotoSeleccionada[0].exists()) {
+				guardarFotoConCodigo(fotoSeleccionada[0], idFinal);
+			}
+
+			nuevo.cargarFotosAutomaticamente(); // carga la foto guardada y cualquier otra con su código en resources/images
 
 			listaAnimales.add(nuevo);
 			modeloAnimales.fireTableDataChanged();
+		}
+	}
+
+	private void guardarFotoConCodigo(java.io.File origen, String codigoAnimal) {
+		String nombreOrig = origen.getName();
+		int punto = nombreOrig.lastIndexOf('.');
+		String ext = (punto >= 0) ? nombreOrig.substring(punto).toLowerCase() : ".png";
+
+		java.io.File carpeta = new java.io.File("resources/images");
+		if (!carpeta.exists()) {
+			carpeta.mkdirs();
+		}
+
+		java.io.File destino = new java.io.File(carpeta, codigoAnimal + ext);
+		try {
+			java.nio.file.Files.copy(
+					origen.toPath(),
+					destino.toPath(),
+					java.nio.file.StandardCopyOption.REPLACE_EXISTING
+			);
+		} catch (java.io.IOException ex) {
+			JOptionPane.showMessageDialog(
+					this,
+					"No se ha podido copiar la foto: " + ex.getMessage(),
+					"Aviso",
+					JOptionPane.WARNING_MESSAGE
+			);
 		}
 	}
 
