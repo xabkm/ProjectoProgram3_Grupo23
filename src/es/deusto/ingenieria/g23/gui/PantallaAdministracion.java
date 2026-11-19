@@ -558,7 +558,10 @@ public class PantallaAdministracion extends JFrame {
         List<String> fotosPruebaKivi = new ArrayList<>();
         fotosPruebaKivi.add("resources/images/A004.png");
         fotosPruebaKivi.add("resources/images/A0041.png");
-       
+        List<String> fotosPruebaCoco = new ArrayList<>();
+        fotosPruebaCoco.add("resources/images/A005.png");
+        fotosPruebaCoco.add("resources/images/A0051.png");
+        
 	        
 	    List<Animal> mocks = new ArrayList<>();
 
@@ -566,7 +569,8 @@ public class PantallaAdministracion extends JFrame {
 	    mocks.add(new Animal("A002", "Luna", Especie.GATO, "Siamés", LocalDate.of(2023, 8, 20), EstadoAnimal.EN_ACOGIDA, "Es una gata que trepa muy bien",false, true,fotosPruebaLuna));
 	    mocks.add(new Animal("A003", "Max", Especie.PERRO, "Labrador", LocalDate.of(2021, 2, 15), EstadoAnimal.ADOPTADO,"Es un perro jugueton",true,false,fotosPruebaMax));
 	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO,"Le encanta correr pero se cansa rápido",false, false,fotosPruebaKivi ));
-
+	    mocks.add(new Animal("A005", "Coco", Especie.LORO, "Guacamayo", LocalDate.of(2007, 6, 8), EstadoAnimal.DISPONIBLE, "Le gusta cantar Rosalia", false, true, fotosPruebaCoco));
+	    
 	    return mocks;
 	}
  
