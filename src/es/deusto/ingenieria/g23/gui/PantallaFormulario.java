@@ -3,10 +3,14 @@ package es.deusto.ingenieria.g23.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,18 +19,21 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import es.deusto.ingenieria.g23.domain.Animal;
+import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
 import es.deusto.ingenieria.g23.domain.Persona;
 import es.deusto.ingenieria.g23.domain.SolicitudAdopcion;
 
 public class PantallaFormulario extends JFrame{
 
-	public PantallaFormulario() {
-	}//VA A HACER FALTA JTextField, JButton, JLabel
-	
-	public static void main(String[] args) {
-		JFrame panelPrincipal = new JFrame();
+
+	private static final long serialVersionUID = 1L;
+
+	 public PantallaFormulario(Animal animal) {
+		JFrame panelPrincipal = this;
 		JPanel separacion = new JPanel(new BorderLayout());
+		separacion.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15)); 
 		JPanel pnlFormulario = new JPanel();
 		pnlFormulario.setLayout(new BoxLayout(pnlFormulario, BoxLayout.Y_AXIS));
 //		JPanel pnlFormulario = new JPanel(new GridLayout(3,2));
@@ -35,10 +42,18 @@ public class PantallaFormulario extends JFrame{
 		
 		
 		// Titulo y boton de finalizar
-		JLabel titulo = new JLabel("FORMULARIO ADOPCION");
+		JLabel titulo = new JLabel("Solicitud de adopcion de " + animal.getNombre());
+		titulo.setFont(new Font("Arial", Font.BOLD, 16));
+		titulo.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
 		separacion.add(titulo, BorderLayout.NORTH);
-		JButton finalizar = new JButton("Finalizar");
-		separacion.add(finalizar, BorderLayout.SOUTH);
+		JButton finalizarBtt = new JButton("Finalizar");
+		JButton cancelarBtt = new JButton("Cancelar");
+		JPanel panelButton = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		panelButton.add(cancelarBtt);
+		panelButton.add(finalizarBtt);
+		separacion.add(panelButton, BorderLayout.SOUTH);
+		
+		panelPrincipal.getRootPane().setDefaultButton(finalizarBtt);
 		
 		// Añadimos los datos que pedimos
 		JTextField campoNombre = new JTextField(20);
@@ -61,8 +76,8 @@ public class PantallaFormulario extends JFrame{
 		
 		// Cuando pulsemos el boton tiene que guardar la informacion
 		// Crea una nueva persona y solicitud de adopcion con ella
-		finalizar.addMouseListener(new MouseAdapter() {			
-			public void mouseClicked(MouseEvent e) {				
+		finalizarBtt.addActionListener(new ActionListener() {			
+			public void actionPerformed(ActionEvent e) {				
 				
 				if(campoNombre.getText().isEmpty()) {
 					JOptionPane.showMessageDialog(panelPrincipal,"El nombre es obligatorio"); return;
@@ -95,12 +110,24 @@ public class PantallaFormulario extends JFrame{
 				solicitud.setSolicitante(persona);
 				solicitud.setFechaSolicitud(LocalDateTime.now());
 				solicitud.setEstado(EstadoSolicitud.PENDIENTE);
+				solicitud.setAnimal(animal);
+				animal.setEstado(EstadoAnimal.ADOPTADO);
 				
 				JOptionPane.showMessageDialog(panelPrincipal, "La solicitud ha sido confirmada.\nFecha: " + solicitud.getFechaSolicitud().toLocalDate() + "\nDNI: " + persona.getDni());
 				
 				panelPrincipal.dispose();
 				
 			}
+
+		});
+		
+		cancelarBtt.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				panelPrincipal.dispose();
+				
+			}
+			
 		});
 		
 		
@@ -117,7 +144,7 @@ public class PantallaFormulario extends JFrame{
 	//SIN CAMBIOS
 	private static JPanel crearFila(String texto, JTextField campoTexto) {
 		// FlowLayout.LEFT alinea a la izquierda y deja 10px de espacio entre el JLabel y el JTextField
-		JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 5));
+		JPanel fila = new JPanel(new FlowLayout(FlowLayout.LEFT, 10, 2));
 	    JLabel lbl = new JLabel(texto);
 	    
 	    lbl.setPreferredSize(new Dimension(85, 20));
@@ -128,6 +155,10 @@ public class PantallaFormulario extends JFrame{
 				
 	}
 	
+	
+	public static void main(String[] args) {
+		new PantallaFormulario(null).setVisible(true);
+	}
 	
 	
 
