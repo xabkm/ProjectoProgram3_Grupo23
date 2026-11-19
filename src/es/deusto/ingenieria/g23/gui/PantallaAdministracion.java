@@ -577,7 +577,7 @@ public class PantallaAdministracion extends JFrame {
 	    mocks.add(new Animal("A004", "Kivi", Especie.PERRO, "Galgo", LocalDate.of(2016, 3, 15), EstadoAnimal.ADOPTADO,"Le encanta correr pero se cansa rápido",false, false,fotosPruebaKivi ));
 	    mocks.add(new Animal("A005", "Coco", Especie.LORO, "Guacamayo", LocalDate.of(2007, 6, 8), EstadoAnimal.DISPONIBLE, "Le gusta cantar Rosalia", false, true, fotosPruebaCoco));
 	    mocks.add(new Animal("A006", "Anubis", Especie.GATO, "Sphynx", LocalDate.of(2018, 9, 8), EstadoAnimal.DISPONIBLE, "Es un gato muy cariñoso. Además no suelta pelos", true, true, fotosPruebaAnubis));
-	    mocks.add(new Animal("A007", "Tito", Especie.LORO, "Cacatúas", LocalDate.of(2010, 6, 21), EstadoAnimal.DISPONIBLE, "Es un loro muy inteligente y expresivo", false, false, fotosPruebaTito));
+	    mocks.add(new Animal("A007", "Tito", Especie.LORO, "Cacatúa", LocalDate.of(2010, 6, 21), EstadoAnimal.DISPONIBLE, "Es un loro muy inteligente y expresivo", false, false, fotosPruebaTito));
 
 	    return mocks;
 	}
