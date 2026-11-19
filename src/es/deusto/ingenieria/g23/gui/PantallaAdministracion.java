@@ -190,46 +190,53 @@ public class PantallaAdministracion extends JFrame {
 	 		btnEliminar.addActionListener(e -> eliminarAnimal());
 	    return panel;
 	}
-	//  formulario con JOptionPane para dar de alta un nuevo animal
-		private void nuevoAnimal() {
-			JTextField txtId = new JTextField();
-			JTextField txtNombre = new JTextField();
-			JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
-			JTextField txtRaza = new JTextField();
-			JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
+	// Formulario con JOptionPane para dar de alta un nuevo animal
+	private void nuevoAnimal() {
+		String idGenerado = Animal.generarSiguienteId(listaAnimales);
+		JTextField txtId = new JTextField(idGenerado);
+		txtId.setEditable(false);
+		txtId.setEnabled(false);
 
-			JComponent[] campos = new JComponent[] {
-				new JLabel("ID del Animal:"), txtId,
-				new JLabel("Nombre:"), txtNombre,
-				new JLabel("Especie:"), comboEspecie,
-				new JLabel("Raza:"), txtRaza,
-				new JLabel("Estado:"), comboEstado
-			};
+		JTextField txtNombre = new JTextField();
+		JComboBox<Especie> comboEspecie = new JComboBox<>(Especie.values());
+		JTextField txtRaza = new JTextField();
+		JComboBox<EstadoAnimal> comboEstado = new JComboBox<>(EstadoAnimal.values());
 
-			int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+		JComponent[] campos = new JComponent[] {
+			new JLabel("ID del Animal (automático):"), txtId,
+			new JLabel("Nombre:"), txtNombre,
+			new JLabel("Especie:"), comboEspecie,
+			new JLabel("Raza:"), txtRaza,
+			new JLabel("Estado:"), comboEstado
+		};
 
-			if (opcion == JOptionPane.OK_OPTION) {
-				if (txtId.getText().trim().isEmpty() || txtNombre.getText().trim().isEmpty()) {
-					JOptionPane.showMessageDialog(this, "El ID y el Nombre son obligatorios", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				
-				
-				Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
-				EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
-				Animal nuevo = new Animal(
-					txtId.getText().trim(),
-					txtNombre.getText().trim(),
-					especieSeleccionada,
-					txtRaza.getText().trim(),
-					LocalDate.now(),
-					estadoSeleccionado
-				);
+		int opcion = JOptionPane.showConfirmDialog(this, campos, "Nuevo Animal", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-				listaAnimales.add(nuevo);
-				modeloAnimales.fireTableDataChanged();
+		if (opcion == JOptionPane.OK_OPTION) {
+			if (txtNombre.getText().trim().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "El Nombre es obligatorio", "Datos incompletos", JOptionPane.ERROR_MESSAGE);
+				return;
 			}
+
+			// Se vuelve a calcular al confirmar por si cambió la lista y se asegura el formato
+			String idFinal = Animal.generarSiguienteId(listaAnimales);
+
+			Especie especieSeleccionada = (Especie) comboEspecie.getSelectedItem();
+			EstadoAnimal estadoSeleccionado = (EstadoAnimal) comboEstado.getSelectedItem();
+			Animal nuevo = new Animal(
+				idFinal,
+				txtNombre.getText().trim(),
+				especieSeleccionada,
+				txtRaza.getText().trim(),
+				LocalDate.now(),
+				estadoSeleccionado
+			);
+			nuevo.cargarFotosAutomaticamente(); // si ya hay fotos con su código en resources/images, las coge solas
+
+			listaAnimales.add(nuevo);
+			modeloAnimales.fireTableDataChanged();
 		}
+	}
 
 		//  modificar los datos del animal seleccionado en la tabla
 		private void editarAnimal() {
