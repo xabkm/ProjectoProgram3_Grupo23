@@ -88,7 +88,7 @@ public class PantallaUsuario extends JFrame {
 		tablaAnimales.setRowHeight(24);
 		
 		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55); 
-		tablaAnimales.getColumnModel().getColumn(5).setHeaderValue("Solicitar Adocpción"); // para no crear demasiados table modeles simplemnte cambiamos el nombre
+		tablaAnimales.getColumnModel().getColumn(5).setHeaderValue("Solicitar Adopción"); // para no crear demasiados table modeles simplemnte cambiamos el nombre
 		tablaAnimales.getTableHeader().repaint();
 		
 		tablaAnimales.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() { // aqui se crea el boton pero solo aparece como imagen
@@ -210,8 +210,8 @@ public class PantallaUsuario extends JFrame {
 		tablaSolicitudes.addMouseListener(new java.awt.event.MouseAdapter() { // le añadimos el listener porque sino seria como si solo fuera una imagen
 			@Override
 			public void mouseClicked(java.awt.event.MouseEvent e) {
-				int columnaClic = tablaAnimales.columnAtPoint(e.getPoint());
-				int filaClic = tablaAnimales.rowAtPoint(e.getPoint());
+				int columnaClic = tablaSolicitudes.columnAtPoint(e.getPoint());
+				int filaClic = tablaSolicitudes.rowAtPoint(e.getPoint());
 				
 				
 				if (columnaClic == 5 && filaClic != -1) {
