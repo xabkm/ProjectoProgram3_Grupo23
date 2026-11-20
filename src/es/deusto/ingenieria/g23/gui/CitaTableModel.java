@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 public class CitaTableModel extends AbstractTableModel {
 
 	private static final long serialVersionUID = 1L;
-	private final String[] columnas = { "ID", "Fecha y Hora", "Tipo", "Animal", "Persona Asignada", "Estado" };
+	private final String[] columnas = { "ID", "Fecha y Hora", "Tipo", "Animal", "Persona Asignada", "Estado","Boton 1", "Boton 2"};
 	private final DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 	private List<CitaAgenda> citas;
 
@@ -60,6 +60,11 @@ public class CitaTableModel extends AbstractTableModel {
 			}
 		case 5:
 			return c.getEstado();
+		case 6: 
+			return "";
+		case 7:
+			return "";
+		
 		default:
 			return null;
 		}

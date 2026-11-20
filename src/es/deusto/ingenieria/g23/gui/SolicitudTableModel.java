@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class SolicitudTableModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
-    private final String[] columnas = {"ID", "Animal", "Solicitante", "Fecha y Hora", "Estado"};
+    private final String[] columnas = {"ID", "Animal", "Solicitante", "Fecha y Hora", "Estado","Boton1"};
     private final DateTimeFormatter formatoFecha = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     private List<SolicitudAdopcion> solicitudes;
 
@@ -57,6 +57,8 @@ public class SolicitudTableModel extends AbstractTableModel {
 			}
         case 4: 
             return s.getEstado();
+        case 5: 
+            return "";
         default: 
             return null;
     }

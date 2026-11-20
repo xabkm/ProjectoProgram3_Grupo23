@@ -88,6 +88,38 @@ public class PantallaUsuario extends JFrame {
 		tablaAnimales.setRowHeight(24);
 		
 		tablaAnimales.getColumnModel().getColumn(0).setPreferredWidth(55); 
+		tablaAnimales.getColumnModel().getColumn(5).setHeaderValue("Solicitar Adocpción"); // para no crear demasiados table modeles simplemnte cambiamos el nombre
+		tablaAnimales.getTableHeader().repaint();
+		
+		tablaAnimales.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() { // aqui se crea el boton pero solo aparece como imagen
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				JButton botonCelda = new JButton("Adoptar");
+				botonCelda.setBackground(Color.BLACK);
+				botonCelda.setForeground(Color.WHITE);
+				botonCelda.setFont(new Font("Arial", Font.BOLD, 12));
+				return botonCelda;
+				
+				
+			}
+		});
+		tablaAnimales.addMouseListener(new java.awt.event.MouseAdapter() { // le añadimos el listener porque sino seria como si solo fuera una imagen
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int columnaClic = tablaAnimales.columnAtPoint(e.getPoint());
+				int filaClic = tablaAnimales.rowAtPoint(e.getPoint());
+				
+				
+				if (columnaClic == 5 && filaClic != -1) {
+					solicitarAdopcion(filaClic); 
+				}
+			}
+		});
+		
+		
+		
 		tablaAnimales.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() { // cambiar los colores dependiendo del estado 
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -118,26 +150,18 @@ public class PantallaUsuario extends JFrame {
 		panelTabla.setBorder(BorderFactory.createTitledBorder("Nuestros animales"));
 		panelTabla.add(scroll, BorderLayout.CENTER);
 		panelanimales.add(panelTabla, BorderLayout.CENTER);
-		JPanel panelBotones = new JPanel(new FlowLayout());
-		JButton btnAdoptar = new JButton("Solicitar Adopción");
-		btnAdoptar.setFont(new Font("Arial", Font.BOLD, 14));
-		btnAdoptar.setBackground(Color.black);
-		btnAdoptar.setForeground(Color.WHITE);
-		panelBotones.add(btnAdoptar);
-		panelanimales.add(panelBotones, BorderLayout.SOUTH);
 		
-		btnAdoptar.addActionListener(e -> solicitarAdopcion());
+		
+		
+		
 
 		
 		return panelanimales;
 	}
 	
-	private void solicitarAdopcion() {
-		int fila = tablaAnimales.getSelectedRow();
-		if (fila == -1) { // si no se selecciona animal se avisa que hay que seleccionar uno
-			JOptionPane.showMessageDialog(this, "Selecciona un animal de la lista para adoptarlo.", "Aviso", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
+	private void solicitarAdopcion(int fila) {
+		
+		
 		Animal seleccionado = listaAnimales.get(fila);
 		if (seleccionado.getEstado() != EstadoAnimal.DISPONIBLE) { // si en el momento el animal no esta disponible (aunque no sea que este directamente adoptado) se le avisa
 			JOptionPane.showMessageDialog(this, "Lo sentimos, " + seleccionado.getNombre() + " no está disponible actualmente.", "No disponible", JOptionPane.ERROR_MESSAGE);
@@ -170,6 +194,32 @@ public class PantallaUsuario extends JFrame {
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
 		
+		tablaSolicitudes.getColumnModel().getColumn(5).setHeaderValue("Retirar Solicitud");
+		tablaSolicitudes.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				JButton botonCelda = new JButton("Retirar");
+				botonCelda.setBackground(Color.RED);
+				botonCelda.setForeground(Color.WHITE);
+				botonCelda.setFont(new Font("Arial", Font.BOLD, 12));
+				return botonCelda;
+			}
+		});
+		tablaSolicitudes.addMouseListener(new java.awt.event.MouseAdapter() { // le añadimos el listener porque sino seria como si solo fuera una imagen
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int columnaClic = tablaAnimales.columnAtPoint(e.getPoint());
+				int filaClic = tablaAnimales.rowAtPoint(e.getPoint());
+				
+				
+				if (columnaClic == 5 && filaClic != -1) {
+					retirarSolicitud(filaClic); 
+				}
+			}
+		});
+		
 		tablaSolicitudes.getColumnModel().getColumn(4).setCellRenderer(new DefaultTableCellRenderer() {
 		private static final long serialVersionUID = 1L;
 		@Override
@@ -194,35 +244,19 @@ public class PantallaUsuario extends JFrame {
 			}
 			});
 		
-		JPanel panelBotones = new JPanel(new FlowLayout());
-		JButton btnCancelar = new JButton("Retirar Solicitud");
-		btnCancelar.setFont(new Font("Arial", Font.BOLD, 14));
-		btnCancelar.setBackground(Color.black);
-		btnCancelar.setForeground(Color.WHITE);
-		panelBotones.add(btnCancelar);
-		panelsolicitudes.add(panelBotones, BorderLayout.SOUTH);
-		btnCancelar.addActionListener(e -> {
-			int fila = tablaSolicitudes.getSelectedRow();
-			
-			if (fila != -1) {
-				int conf = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres cancelar tu solicitud?", "Confirmar", JOptionPane.YES_NO_OPTION);
-				if (conf == JOptionPane.YES_OPTION) {
-					misSolicitudes.remove(fila);
-					modeloSolicitudes.fireTableDataChanged();
-				} 
-			}else {
-				JOptionPane.showMessageDialog(this, "Selecciona una solicitud para retirarla","Aviso", JOptionPane.WARNING_MESSAGE);
-				
-			}
-		});
-
-		
 		JScrollPane scroll = new JScrollPane(tablaSolicitudes);
 		JPanel panelTablaSol = new JPanel(new BorderLayout());
 		panelTablaSol.setBorder(BorderFactory.createTitledBorder("Tus Solicitudes"));
 		panelTablaSol.add(scroll, BorderLayout.CENTER);
 		panelsolicitudes.add(panelTablaSol, BorderLayout.CENTER);
 		return panelsolicitudes;
+	}
+	private void retirarSolicitud(int fila) {
+		int conf = JOptionPane.showConfirmDialog(this, "¿Seguro que quieres cancelar tu solicitud?", "Confirmar", JOptionPane.YES_NO_OPTION);
+		if (conf == JOptionPane.YES_OPTION) {
+			misSolicitudes.remove(fila);
+			modeloSolicitudes.fireTableDataChanged();
+		} 
 	}
 	
 	private JPanel crearPanelMisCitas() {
@@ -264,6 +298,49 @@ public class PantallaUsuario extends JFrame {
 			}
 			
 		});
+		tablaCitas.getColumnModel().getColumn(6).setHeaderValue("Detalles de la Cita");
+		tablaCitas.getColumnModel().getColumn(7).setHeaderValue("Cancelar Cita");
+		tablaCitas.getColumnModel().getColumn(6).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				JButton botonCelda = new JButton("Detalles");
+				botonCelda.setBackground(Color.BLACK);
+				botonCelda.setForeground(Color.WHITE);
+				botonCelda.setFont(new Font("Arial", Font.BOLD, 12));
+				return botonCelda;
+			}
+		});
+		tablaCitas.addMouseListener(new java.awt.event.MouseAdapter() { // le añadimos el listener porque sino seria como si solo fuera una imagen
+			@Override
+			public void mouseClicked(java.awt.event.MouseEvent e) {
+				int columnaClic = tablaCitas.columnAtPoint(e.getPoint());
+				int filaClic = tablaCitas.rowAtPoint(e.getPoint());
+				
+				
+				if (columnaClic == 6 && filaClic != -1) {
+					detallesCita(filaClic); 
+				} else if (columnaClic == 7 && filaClic != -1) {
+					cancelarCita(filaClic); 
+				}
+			}
+		});
+		tablaCitas.getColumnModel().getColumn(7).setCellRenderer(new DefaultTableCellRenderer() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+					boolean hasFocus, int row, int column) {
+				JButton botonCelda = new JButton("Cancelar");
+				botonCelda.setBackground(Color.RED);
+				botonCelda.setForeground(Color.WHITE);
+				botonCelda.setFont(new Font("Arial", Font.BOLD, 12));
+				return botonCelda;
+			}
+		});
+		
 		
 		tablaCitas.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
@@ -291,29 +368,8 @@ public class PantallaUsuario extends JFrame {
 			}
 		});
 
-		JPanel panelbotones =new JPanel(new FlowLayout());
-		JButton btnCit = new JButton("Detalles de la Cita");
-		btnCit.setFont(new Font("Arial", Font.BOLD, 14));
-		btnCit.setBackground(Color.black);
-		btnCit.setForeground(Color.WHITE);
-		panelbotones.add(btnCit);
 		
-		JButton botonCancel = new JButton("Cancelar Cita");
-		botonCancel.setFont(new Font("Arial", Font.BOLD, 14));
-		botonCancel.setBackground(Color.black);
-		botonCancel.setForeground(Color.WHITE);
-		panelbotones.add(botonCancel);
 		
-		panelcitas.add(panelbotones,BorderLayout.SOUTH); 
-		botonCancel.addActionListener(e-> cancelarCita());
-		btnCit.addActionListener(e ->{
-			int fila = tablaCitas.getSelectedRow();
-			CitaAgenda selec = misCitas.get(fila);
-			if(fila != -1) {
-				JOptionPane.showMessageDialog(this, "Acude a tu cita en la sede de la asociación 10 minutos antes del "+selec.getFechaHora()+" para la "+selec.getTipoCita() +".\nNo olvides traer tu DNI.", "Información", JOptionPane.INFORMATION_MESSAGE);
-			} 
-
-		});
 		
 		JScrollPane scroll = new JScrollPane(tablaCitas);
 		JPanel panelTablaCit = new JPanel(new BorderLayout());
@@ -325,13 +381,16 @@ public class PantallaUsuario extends JFrame {
 		return panelcitas;
 	}
 	
+	private void detallesCita(int fila) {
+		
+		CitaAgenda selec = misCitas.get(fila);
+		JOptionPane.showMessageDialog(this, "Acude a tu cita en la sede de la asociación 10 minutos antes del "+selec.getFechaHora()+" para la "+selec.getTipoCita() +".\nNo olvides traer tu DNI.", "Información", JOptionPane.INFORMATION_MESSAGE);
+		
+		};
 	
-	private void cancelarCita() {
-		int fila = tablaCitas.getSelectedRow();
-		if (fila == -1) { // si no se selecciona animal se avisa que hay que seleccionar uno
-			JOptionPane.showMessageDialog(this, "Selecciona una cita de la lista para cancelarla.", "Aviso", JOptionPane.WARNING_MESSAGE);
-			return;
-		}
+	
+	private void cancelarCita(int fila) {
+		
 		CitaAgenda seleccionado = misCitas.get(fila);
 		
 		int pregunta = JOptionPane.showConfirmDialog(this, // pedimos confirmación por si acaso
