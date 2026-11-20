@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -120,9 +121,9 @@ public class PantallaCatalogo extends JFrame {
 		Image logoEsc = logoSinEscalar.getImage().getScaledInstance(60, 52, Image.SCALE_SMOOTH);
 		JLabel lblTitulo = new JLabel("Planeta Animal", new ImageIcon(logoEsc), JLabel.LEFT);
 		lblTitulo.setIconTextGap(12);
-		JPanel panelCuenta = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 9));
+		
+		JPanel panelCuenta = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		panelCuenta.setBackground(Color.WHITE);
-		panelCuenta.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 0));
 		panelCuenta.add(btnQuienes);
 		panelCuenta.add(btnPerfil);
 		lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 20));
@@ -157,7 +158,7 @@ public class PantallaCatalogo extends JFrame {
 		lblEspecies.setFont(new Font("SansSerif", Font.BOLD, 12));
 		pControles.add(lblEspecies);
 
-		checksEspecie = new HashMap<>();
+		checksEspecie = new EnumMap<>(Especie.class);
 		for (Especie esp : Especie.values()) {
 			JCheckBox chk = new JCheckBox(esp.toString());
 			chk.setBackground(Color.WHITE);
@@ -264,9 +265,9 @@ public class PantallaCatalogo extends JFrame {
 		String clave = new String(txtClave.getPassword());
 
 		if (nombre.equals("usuario") && clave.equals("1234")) {        // PARA ACCEDER AL PANEL USUARIO NOMBRE = usuario, CONTRASEÑA = 1234
-			Usuario usuario = new Usuario("00000000T", "usuario", "", "usuario@refugio", "Adolf");
+			Usuario usuario = new Usuario("00000000T", "usuario", "", "usuario@refugio", "600000000");
 			new PantallaUsuario(usuario).setVisible(true);
-		} else if (nombre.equals("admin") && clave.equals("1234")) {	 // PARA ACCEDER AL PANEL USUARIO NOMBRE = admin, CONTRASEÑA = 1234
+		} else if (nombre.equals("admin") && clave.equals("1234")) {	 // PARA ACCEDER AL PANEL ADMIN NOMBRE = admin, CONTRASEÑA = 1234
 			Administrador admin = new Administrador("00000000T", "admin", "", "admin@refugio.es", "000000000");
 			new PantallaAdministracion(admin).setVisible(true);
 		} else {
@@ -295,7 +296,7 @@ public class PantallaCatalogo extends JFrame {
 			if (!a.getNombre().toLowerCase().contains(texto)) {
 				continue;
 			}
-			if (hayEspecie && !checksEspecie.get(a.getEspecie()).isSelected()) {
+			if (hayEspecie && (a.getEspecie() == null || !checksEspecie.get(a.getEspecie()).isSelected())) {
 				continue;
 			}
 			if (chkDisponibles.isSelected() && a.getEstado() != EstadoAnimal.DISPONIBLE) {
@@ -346,15 +347,23 @@ public class PantallaCatalogo extends JFrame {
 			JLabel lblNombre = new JLabel(a.getNombre());
 			lblNombre.setFont(new Font("SansSerif", Font.BOLD, 15));
 
-			JLabel lblRaza = new JLabel(a.getRaza() + " - " + a.getEspecie());
+			// si no tiene raza se escribe solo la especie
+			String textoRaza = String.valueOf(a.getEspecie());
+			if (a.getRaza() != null && !a.getRaza().trim().isEmpty()) {
+				textoRaza = a.getRaza() + " - " + a.getEspecie();
+			}
+			JLabel lblRaza = new JLabel(textoRaza);
 			lblRaza.setFont(new Font("SansSerif", Font.PLAIN, 12));
 			lblRaza.setForeground(Color.DARK_GRAY);
 			
 			// Preparar texto y color del estado
-						String textoEstado = a.getEstado().toString().replace("_", " ").toLowerCase();
-						textoEstado = textoEstado.substring(0, 1).toUpperCase() + textoEstado.substring(1);
-
+						String textoEstado = "Sin estado";
 						Color colorEstado = new Color(180, 110, 0); // colores sugeridos por la IA
+						if (a.getEstado() != null) {
+							textoEstado = a.getEstado().toString().replace("_", " ").toLowerCase();
+							textoEstado = textoEstado.substring(0, 1).toUpperCase() + textoEstado.substring(1);
+						}
+						
 						if (a.getEstado() == EstadoAnimal.DISPONIBLE) {
 							colorEstado = new Color(45, 106, 79);
 						} else if (a.getEstado() == EstadoAnimal.ADOPTADO) {
