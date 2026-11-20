@@ -268,6 +268,7 @@ public class PantallaDetalleAnimal extends JFrame {
         });
 
         hiloFotos.start();
+        hiloFotos.setDaemon(true); // el hilo no impide cerrar el programa
     }
 
     private boolean esVideo(String ruta) {

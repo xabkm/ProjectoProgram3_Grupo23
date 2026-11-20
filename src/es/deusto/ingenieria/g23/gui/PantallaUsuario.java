@@ -158,8 +158,22 @@ public class PantallaUsuario extends JFrame {
 		
 		return panelanimales;
 	}
-	
+	// Siguiente código libre tipo S1, S2... (el mayor que haya + 1). Así no se repite aunque se retire alguna solicitud
+		private String siguienteIdSolicitud() {
+			int max = 0;
+			for (SolicitudAdopcion s : misSolicitudes) {
+				try {
+					max = Math.max(max, Integer.parseInt(s.getId().substring(1)));
+				} catch (NumberFormatException e) {
+					// si el código no tiene el formato esperado, se ignora
+				}
+			}
+			return "S" + (max + 1);
+		}
+		
 	private void solicitarAdopcion(int fila) {
+		
+		
 		
 		
 		Animal seleccionado = listaAnimales.get(fila);
@@ -167,13 +181,19 @@ public class PantallaUsuario extends JFrame {
 			JOptionPane.showMessageDialog(this, "Lo sentimos, " + seleccionado.getNombre() + " no está disponible actualmente.", "No disponible", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
+		for (SolicitudAdopcion s : misSolicitudes) { // no se puede pedir dos veces el mismo animal
+			if (s.getAnimal().equals(seleccionado) && s.getEstado() == EstadoSolicitud.PENDIENTE) {
+				JOptionPane.showMessageDialog(this, "Ya tienes una solicitud pendiente para " + seleccionado.getNombre() + ".", "Solicitud repetida", JOptionPane.WARNING_MESSAGE);
+				return;
+			}
+		}
 		int pregunta = JOptionPane.showConfirmDialog(this, // pedimos confirmación por si acaso
 				"¿Deseas enviar una solicitud de adopción para " + seleccionado.getNombre() + "?",
 				"Confirmar solicitud", JOptionPane.YES_NO_OPTION);
 		if (pregunta == JOptionPane.YES_OPTION) {
 			
 			SolicitudAdopcion nuevaSolicitud = new SolicitudAdopcion( // creamos la solicitud
-					"S" + (misSolicitudes.size() + 1),
+					siguienteIdSolicitud(),
 					seleccionado,
 					(Usuario)usuarioActual, //nos aseguramos que es un usuario y no un administrador
 					LocalDateTime.now(),
