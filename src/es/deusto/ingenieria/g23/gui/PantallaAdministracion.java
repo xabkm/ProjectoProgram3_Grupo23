@@ -731,6 +731,7 @@ public class PantallaAdministracion extends JFrame {
         fotosPruebaLuna.add("resources/images/A0022.png");
         fotosPruebaLuna.add("resources/images/A0023.png");
         List<String> fotosPruebaMax = new ArrayList<>();
+        fotosPruebaMax.add("resources/images/A003.png");
         fotosPruebaMax.add("resources/images/max1.png");
         fotosPruebaMax.add("resources/images/max2.png");
         List<String> fotosPruebaKivi = new ArrayList<>();
