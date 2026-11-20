@@ -175,11 +175,15 @@ public class PantallaAdministracion extends JFrame {
 			});
 	 		
 	 		tablaAnimales.getColumnModel().getColumn(5).setHeaderValue("Editar Animal");
+	 		
+	 		tablaAnimales.getColumnModel().getColumn(5).setPreferredWidth(20);
+	 		tablaAnimales.getColumnModel().getColumn(6).setPreferredWidth(20);
 	 		tablaAnimales.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() { // aqui se crea el boton pero solo aparece como imagen
 				private static final long serialVersionUID = 1L;
 				@Override
 				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 						boolean hasFocus, int row, int column) {
+					
 					JButton botonCelda = new JButton("Editar");
 					botonCelda.setBackground(Color.BLACK);
 					botonCelda.setForeground(Color.WHITE);
@@ -413,7 +417,7 @@ public class PantallaAdministracion extends JFrame {
 		private JPanel crearPanelAdopciones() {
 			JPanel panel = new JPanel(new BorderLayout(5, 10));
 
-			panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+			
 			modeloSolicitudes = new SolicitudTableModel(listaSolicitudes) { // IAG Gemini
 	 		    private static final long serialVersionUID = 1L;
 
@@ -451,6 +455,8 @@ public class PantallaAdministracion extends JFrame {
 			tablaSolicitudes.getColumnModel().getColumn(0).setPreferredWidth(60);
 			tablaSolicitudes.getColumnModel().getColumn(5).setHeaderValue("Gestionar Estado A");
 			
+			tablaSolicitudes.getColumnModel().getColumn(5).setPreferredWidth(20);
+			tablaSolicitudes.getColumnModel().getColumn(6).setPreferredWidth(20);
 			tablaSolicitudes.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() { // aqui se crea el boton pero solo aparece como imagen
 				private static final long serialVersionUID = 1L;
 				@Override
