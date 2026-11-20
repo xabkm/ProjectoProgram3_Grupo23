@@ -91,6 +91,7 @@ public class PantallaUsuario extends JFrame {
 		tablaAnimales.getColumnModel().getColumn(5).setHeaderValue("Solicitar Adopción"); // para no crear demasiados table modeles simplemnte cambiamos el nombre
 		tablaAnimales.getTableHeader().repaint();
 		
+		tablaAnimales.getColumnModel().getColumn(5).setPreferredWidth(20); 
 		tablaAnimales.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() { // aqui se crea el boton pero solo aparece como imagen
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -213,7 +214,7 @@ public class PantallaUsuario extends JFrame {
 		tablaSolicitudes = new JTable(modeloSolicitudes);
 		tablaSolicitudes.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tablaSolicitudes.setRowHeight(24);
-		
+		tablaSolicitudes.getColumnModel().getColumn(5).setPreferredWidth(20); 
 		tablaSolicitudes.getColumnModel().getColumn(5).setHeaderValue("Retirar Solicitud");
 		tablaSolicitudes.getColumnModel().getColumn(5).setCellRenderer(new DefaultTableCellRenderer() {
 			private static final long serialVersionUID = 1L;
