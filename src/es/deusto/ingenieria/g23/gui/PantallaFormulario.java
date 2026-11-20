@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.swing.BorderFactory;
@@ -20,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import es.deusto.ingenieria.g23.domain.Animal;
+import es.deusto.ingenieria.g23.domain.Especie;
 import es.deusto.ingenieria.g23.domain.EstadoAnimal;
 import es.deusto.ingenieria.g23.domain.EstadoSolicitud;
 import es.deusto.ingenieria.g23.domain.Persona;
@@ -77,33 +79,40 @@ public class PantallaFormulario extends JFrame{
 		// Cuando pulsemos el boton tiene que guardar la informacion
 		// Crea una nueva persona y solicitud de adopcion con ella
 		finalizarBtt.addActionListener(new ActionListener() {			
-			public void actionPerformed(ActionEvent e) {				
+			public void actionPerformed(ActionEvent e) {	
 				
-				if(campoNombre.getText().isEmpty()) {
+				String nombre = campoNombre.getText().trim();
+				String apellidos = campoApellidos.getText().trim();
+				String dni = campoDni.getText().trim().toUpperCase();
+				String email = campoEmail.getText().trim();
+				String tlf = campoTlf.getText().trim();
+				
+				if(nombre.isEmpty()) {
 					JOptionPane.showMessageDialog(panelPrincipal,"El nombre es obligatorio"); return;
 				}
 				
-				if(campoApellidos.getText().isEmpty()) {
+				if(apellidos.isEmpty()) {
 					JOptionPane.showMessageDialog(panelPrincipal,"Los apellidos son obligatorios"); return;
 				}
 				
-				if(campoDni.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(panelPrincipal,"El DNI es obligatorio"); return;
+				//IAG(Claude) 	Me ha dicho como alidar DNI, email y telefono
+				if(!dni.matches("\\d{8}[A-Z]")) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El DNI debe tener 8 números y una letra (ej: 12345678Z)"); return;
 				}
 				
-				if(campoEmail.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(panelPrincipal,"El email es obligatorio"); return;
+				if(!email.matches("[^@\\s]+@[^@\\s]+\\.[^@\\s]+")) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El email no es válido (ej: nombre@correo.com)"); return;
 				}
-				if(campoTlf.getText().isEmpty()) {
-					JOptionPane.showMessageDialog(panelPrincipal,"El telefono es obligatorio"); return;
+				if(!tlf.matches("\\d{9}")) {
+					JOptionPane.showMessageDialog(panelPrincipal,"El teléfono debe tener 9 números"); return;
 				}
 				
 				Persona persona = new Persona();
-				persona.setNombre(campoNombre.getText());
-				persona.setApellidos(campoApellidos.getText());
-				persona.setDni(campoDni.getText());
-				persona.setEmail(campoEmail.getText());
-				persona.setTelefono(campoTlf.getText());
+				persona.setNombre(nombre);
+				persona.setApellidos(apellidos);
+				persona.setDni(dni);
+				persona.setEmail(email);
+				persona.setTelefono(tlf);
 				
 				
 				SolicitudAdopcion solicitud = new SolicitudAdopcion();
@@ -157,7 +166,7 @@ public class PantallaFormulario extends JFrame{
 	
 	
 	public static void main(String[] args) {
-		new PantallaFormulario(null).setVisible(true);
+		new PantallaFormulario(new Animal("A001", "Toby", Especie.PERRO, "Mestizo", LocalDate.of(2022, 5, 10), EstadoAnimal.DISPONIBLE)).setVisible(true);
 	}
 	
 	
